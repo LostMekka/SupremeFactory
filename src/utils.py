@@ -10,6 +10,16 @@ def get_adjacent_pos(pos, dir):
             3 : (pos[0], pos[1] + 1),
         }[dir]
 
+def is_point_in_rect(point, rect, mode = 1):
+    if mode == 0:
+        return rect[0] < point[0] < (rect[0] + rect[2]) and \
+               rect[1] < point[1] < (rect[1] + rect[3])
+    if mode == 2:
+        return rect[0] <= point[0] <= (rect[0] + rect[2]) and \
+               rect[1] <= point[1] <= (rect[1] + rect[3])
+    return rect[0] <= point[0] < (rect[0] + rect[2]) and \
+           rect[1] <= point[1] < (rect[1] + rect[3])
+
 class Duct(dict):
     '''
     duck = Duct(voice = "quack", mass = 0.6)
