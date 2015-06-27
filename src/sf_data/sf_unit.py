@@ -67,6 +67,21 @@ class BfUnit(Sprite):
         self.image  = self.anim.image()
         self.rect.x = self.move.pos
 
+    def add_speed(self, v):
+        self.move.speed += v
+
+    def add_hp(self, v):
+        # TODO do stuff
+        pass
+
+    def add_attack(self, v):
+        # TODO do stuff
+        pass
+
+    def add_range(self, v):
+        # TODO do stuff
+        pass
+
 class Unit:
 
     def __init__(self):
