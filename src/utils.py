@@ -1,3 +1,7 @@
+'''
+from utils import *
+'''
+
 class Duct(dict):
     '''
     duck = Duct(voice = "quack", mass = 0.6)
