@@ -2,6 +2,13 @@
 from utils import *
 '''
 
+def get_adjacent_pos(pos, dir):
+    return {
+            0 : (pos[0] + 1, pos[1]),
+            1 : (pos[0], pos[1] - 1),
+            2 : (pos[0] - 1, pos[1]),
+            3 : (pos[0], pos[1] + 1),
+        }[dir]
 
 class Duct(dict):
     '''
