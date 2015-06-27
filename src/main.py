@@ -10,9 +10,7 @@ def main():
     pygame.init()
     setup_ui()
     app.display_surface = pygame.display.set_mode((1024, 700))
-
     pygame.display.set_caption('SupremeFactory!')
-
     run_main_loop()
 
 
@@ -28,11 +26,14 @@ def run_main_loop():
     while True:  # main game loop
         draw_ui()
         drawMousePos()
-        mouse = pygame.mouse.get_pos()
-        if app.testbutton.is_pressed(mouse):
-            print("FOOBAR")
 
         for event in pygame.event.get():
+            if event.type == MOUSEBUTTONUP:
+                mouse_pos = pygame.mouse.get_pos()
+                button_text = check_button_press(mouse_pos)
+                if button_text:
+                    print(button_text)
+
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
@@ -53,16 +54,8 @@ def setup_ui():
         battlefield_tile
     ]
 
-    app.testbutton = SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white)
-
-
-def draw_ui():
-    surface = app.display_surface
-    for tile in app.tiles:
-        pygame.draw.rect(surface, tile.bg_color, tile.rect)
-
-    app.testbutton.draw(surface)
-    app.testbutton.write_text(surface)
+    app.buttons = []
+    app.buttons.append(SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white))
 		
 def drawMousePos():	
     (mouseX, mouseY) = pygame.mouse.get_pos()
@@ -72,13 +65,24 @@ def drawMousePos():
     TextRect.center = ((mouseX+10),(mouseY))
     app.display_surface.blit(TextSurf, TextRect)		
     
-	
+def draw_ui():
+    surface = app.display_surface
+    for tile in app.tiles:
+        pygame.draw.rect(surface, tile.bg_color, tile.rect)
+
+    for button in app.buttons:
+        button.draw(surface)
+        button.write_text(surface)
 
 
 def draw_tile(tile):
     surface = app.display_surface
     pygame.draw.rect(surface, tile.bg_color, tile.rect)
 
+def check_button_press(mouse_pos):
+    for button in app.buttons:
+        if button.is_pressed:
+            return button.text
 
 if __name__ == "__main__":
     main()
