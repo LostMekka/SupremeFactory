@@ -48,7 +48,7 @@ def setup_ui():
 
     app.buttons = []
     app.buttons.append(
-        SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white, foo)
+        SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white, None)
     )
 
     app.labels = []
