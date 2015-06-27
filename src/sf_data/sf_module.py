@@ -160,6 +160,7 @@ class Module(SFButton):
         # when not building: if we have no unit to work on, do nothing
         if not self.unit:
             return
+        self.unit.update(time)
         if self.input_timer > 0:
             if time > input_timer:
                 time -= self.input_timer
