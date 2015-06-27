@@ -56,15 +56,17 @@ def setup_ui():
 
     app.buttons = []
     app.buttons.append(SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white))
-		
-def drawMousePos():	
+
+
+def drawMousePos():
     (mouseX, mouseY) = pygame.mouse.get_pos()
     basicFont = pygame.font.SysFont(None, 48)
-    TextSurf = basicFont.render("X: "+str(mouseX)+" Y:" + str(mouseY), True, Colors.black)
-    TextRect= TextSurf.get_rect()
-    TextRect.center = ((mouseX+10),(mouseY))
-    app.display_surface.blit(TextSurf, TextRect)		
-    
+    TextSurf = basicFont.render("X: " + str(mouseX) + " Y:" + str(mouseY), True, Colors.black)
+    TextRect = TextSurf.get_rect()
+    TextRect.center = ((mouseX + 10), (mouseY))
+    app.display_surface.blit(TextSurf, TextRect)
+
+
 def draw_ui():
     surface = app.display_surface
     for tile in app.tiles:
@@ -79,10 +81,14 @@ def draw_tile(tile):
     surface = app.display_surface
     pygame.draw.rect(surface, tile.bg_color, tile.rect)
 
+
 def check_button_press(mouse_pos):
     for button in app.buttons:
-        if button.is_pressed:
+        if button.is_pressed(mouse_pos):
             return button.text
+        else:
+            return None
+
 
 if __name__ == "__main__":
     main()
