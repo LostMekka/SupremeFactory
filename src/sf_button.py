@@ -1,5 +1,6 @@
 import pygame
 
+
 class SFButton:
     def __init__(self, rect, color, text, text_color, callback):
         self.rect = rect
@@ -18,7 +19,8 @@ class SFButton:
         """
         font = pygame.font.SysFont(None, font_size)
         this_text = font.render(self.text, 1, self.text_color)
-        surface.blit(this_text, ((self.rect[0] + self.rect[2] / 2) - this_text.get_width() / 2, (self.rect[1] + self.rect[3] / 2) - this_text.get_height() / 2))
+        surface.blit(this_text, ((self.rect[0] + self.rect[2] / 2) - this_text.get_width() / 2,
+                                 (self.rect[1] + self.rect[3] / 2) - this_text.get_height() / 2))
         return surface
 
     def draw(self, surface):
@@ -37,10 +39,23 @@ class SFButton:
         :param mouse:
         :return:
         """
-        if self.rect[0] < mouse[0] < (self.rect[0] + self.rect[2]) and self.rect[1] < mouse[1] < (self.rect[1] + self.rect[3]):
+        if self.rect[0] < mouse[0] < (self.rect[0] + self.rect[2]) and self.rect[1] < mouse[1] < (
+            self.rect[1] + self.rect[3]):
             try:
                 self.callback()
             except TypeError:
                 print(self.text + "'s callback is of type " + str(type(self.callback)) + ". Y U NO MAKE IT CALLABLE?")
             return True
         return False
+
+    def calc_module_pos(self, pos):
+        """
+        Returns a rect for a module position for a given position of said module.
+        :param pos:
+        :return:
+        """
+        offset_x = 50
+        offset_y = 150
+        module_size = 150
+
+        return offset_x + (pos[0] * module_size), offset_y + (pos[1] * module_size), module_size, module_size

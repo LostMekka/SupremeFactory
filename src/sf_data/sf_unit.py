@@ -19,6 +19,26 @@ def unit_stuff():
 
 
 
+def elefant_surfaces():
+    anim_paths  = ["../assets/friend"+str(i)+".png" for i in range(1,4)]
+    anim_surfs  = [pygame.image.load(path) for path in anim_paths]
+    return anim_surfs
+
+elefant_surfaces = elefant_surfaces()
+
+
+
+def create_larva():
+    return create_elefant()
+
+
+def create_elefant():
+    sprite          = BfUnit(
+        anim    = Anim(elefant_surfaces),
+        move    = UnitMove(5))
+    return sprite
+
+
 class Anim:
 
     def __init__(self, surfs):
@@ -77,7 +97,7 @@ class UnitFight:
             
 
 
-class BfUnit(Sprite):
+class Unit(Sprite):
 
     def __init__(self, anim, move, fight):
         super(BfUnit, self).__init__()
@@ -93,10 +113,24 @@ class BfUnit(Sprite):
         self.move.update(dt)
         self.image  = self.anim.image()
         self.rect.x = self.move.pos
+    
+    def add_speed(self, v):
+        self.move.speed += v
+
+    def add_hp(self, v):
+        # TODO do stuff
+        pass
+
+    def add_attack(self, v):
+        # TODO do stuff
+        pass
+
+    def add_range(self, v):
+        # TODO do stuff
+        pass    
 
 
 class Projectile(Sprite):
-    
     
     def __init__(self, damage, start, dest):
         super(Projectile, self).__init__()
@@ -106,16 +140,4 @@ class Projectile(Sprite):
         self.img_path = "../assets/projectile.png"
         self.img = pygame.image.load(self.img_path)
         self.rect=self.img.get_rect()
-
-
-class Unit:
-
-    def __init__(self):
-        self.pos = 0
-        self.speed = 0
-        self.hp = 10
-        self.attack = 1
-        self.range = 0
-    
-    def update(self, time):
-        pass
+  
