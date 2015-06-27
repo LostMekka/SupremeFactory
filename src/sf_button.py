@@ -1,11 +1,12 @@
 import pygame
 
 class SFButton:
-    def __init__(self, rect, color, text, text_color):
+    def __init__(self, rect, color, text, text_color, callback):
         self.rect = rect
         self.color = color
         self.text = text
         self.text_color = text_color
+        self.callback = callback
 
     def write_text(self, surface, font_size=14):
         """
@@ -32,10 +33,14 @@ class SFButton:
 
     def is_pressed(self, mouse):
         """
-        Returns true if the given mouse (x,y) is within the button's bounds
+        Calls callback and returns true if the given mouse (x,y) is within the button's bounds
         :param mouse:
         :return:
         """
         if self.rect[0] < mouse[0] < (self.rect[0] + self.rect[2]) and self.rect[1] < mouse[1] < (self.rect[1] + self.rect[3]):
+            try:
+                self.callback()
+            except TypeError:
+                print(self.text + "'s callback is of type " + str(type(self.callback)) + ". Y U NO MAKE IT CALLABLE?")
             return True
         return False

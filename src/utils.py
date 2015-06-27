@@ -27,3 +27,6 @@ Colors = Duct(
     dark_gray=(50, 50, 50),
     green=(20, 200, 20)
 )
+
+def foo():
+    print("bar")
