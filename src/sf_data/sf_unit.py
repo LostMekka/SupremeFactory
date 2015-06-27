@@ -52,7 +52,7 @@ class UnitMove:
 
 
 
-class BfUnit(Sprite):
+class Unit(Sprite):
 
     def __init__(self, anim, move):
         super(BfUnit, self).__init__()
@@ -80,16 +80,4 @@ class BfUnit(Sprite):
 
     def add_range(self, v):
         # TODO do stuff
-        pass
-
-class Unit:
-
-    def __init__(self):
-        self.pos = 0
-        self.speed = 0
-        self.hp = 10
-        self.attack = 1
-        self.range = 0
-    
-    def update(self, time):
         pass
