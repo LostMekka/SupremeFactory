@@ -8,7 +8,7 @@ class SFButton:
         self.text_color = text_color
 
     def write_text(self, surface):
-        font_size = 8
+        font_size = 14
         font = pygame.font.SysFont(None, font_size)
         this_text = font.render(self.text, 1, self.text_color)
         surface.blit(this_text, ((self.rect[0] + self.rect[2] / 2) - this_text.get_width() / 2, (self.rect[1] + self.rect[3] / 2) - this_text.get_height() / 2))
@@ -20,7 +20,7 @@ class SFButton:
         return surface
 
     def is_pressed(self, mouse):
-        if self.rect.topleft[0] < mouse[0] < self.rect.bottomright[0] and self.rect.topleft[1] < mouse[1] < self.rect.bottomright[1]:
+        if self.rect[0] < mouse[0] < (self.rect[0] + self.rect[3]) and self.rect[1] < mouse[1] < (self.rect[1] + self.rect[2]):
             return True
         else:
             return False
