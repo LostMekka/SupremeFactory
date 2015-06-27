@@ -24,8 +24,6 @@ def render_everything():
 
 def run_main_loop():
     while True:  # main game loop
-        draw_ui()
-
         for event in pygame.event.get():
             if event.type == MOUSEBUTTONUP:
                 check_button_press(pygame.mouse.get_pos())
@@ -41,16 +39,12 @@ def run_main_loop():
 def setup_ui():
     main_font = pygame.font.SysFont(None, 24)
 
-    base_factory_tile = Duct(bg_color=Colors.dark_gray, rect=(0, 100, 400, 600))
-    minimap_tile = Duct(bg_color=Colors.light_gray, rect=(0, 0, 1024, 100))
-    visionrect_tile = Duct(bg_color=Colors.white, rect=(5, 5, 140, 90))
-    battlefield_tile = Duct(bg_color=Colors.gray, rect=(400, 100, 624, 600))
-    app.tiles = [
-        base_factory_tile,
-        minimap_tile,
-        visionrect_tile,
-        battlefield_tile
-    ]
+    app.tiles = Duct(
+        factory_tile = Duct(bg_color=Colors.dark_gray, rect=(0, 100, 400, 600)),
+        minimap_tile = Duct(bg_color=Colors.light_gray, rect=(0, 0, 1024, 100)),
+        visionrect_tile = Duct(bg_color=Colors.white, rect=(5, 5, 140, 90)),
+        battlefield_tile = Duct(bg_color=Colors.gray, rect=(400, 100, 624, 600))
+    )
 
     app.buttons = []
     app.buttons.append(
@@ -73,7 +67,7 @@ def draw_mouse_pos():
 
 def draw_ui():
     surface = app.display_surface
-    for tile in app.tiles:
+    for tile in app.tiles.values():
         pygame.draw.rect(surface, tile.bg_color, tile.rect)
 
     for button in app.buttons:
