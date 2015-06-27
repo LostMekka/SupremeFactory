@@ -27,21 +27,17 @@ class App(Duct):
 
     def setup_ui(self):
         self.main_font = pygame.font.SysFont(None, 24)
-
         self.tiles = Duct(
             factory_tile = Duct(bg_color=Colors.dark_gray, rect=(0, 100, 400, 600)),
             minimap_tile = Duct(bg_color=Colors.light_gray, rect=(0, 0, 1024, 100)),
             visionrect_tile = Duct(bg_color=Colors.white, rect=(5, 5, 140, 90)),
             battlefield_tile = Duct(bg_color=Colors.gray, rect=(400, 100, 624, 600))
         )
-
         self.buttons = []
         self.buttons.append(
-            SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white, None)
+            SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white, self.on_button_press)
         )
-
         self.labels = []
-
         self.labels.append(self.main_font.render("Modul 1", 1, Colors.white))
 
     def draw_mouse_pos(self):
@@ -72,14 +68,16 @@ class App(Duct):
 
     def on_mouse_down(self, pos):
         for button in self.buttons:
-            if button.is_pressed(pos):
+            if button.press_if_inside(pos):
                 return button.text
             else:
                 return None
 
     def on_mouse_up(self, pos):
         pass
-
+    
+    def on_button_press(self, button):
+        print("button pressed!")
 
 def main():
     global app
