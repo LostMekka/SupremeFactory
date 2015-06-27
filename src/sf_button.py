@@ -15,7 +15,6 @@ class SFButton:
         :param font_size:
         :return:
         """
-        font_size = font_size
         font = pygame.font.SysFont(None, font_size)
         this_text = font.render(self.text, 1, self.text_color)
         surface.blit(this_text, ((self.rect[0] + self.rect[2] / 2) - this_text.get_width() / 2, (self.rect[1] + self.rect[3] / 2) - this_text.get_height() / 2))
@@ -37,7 +36,6 @@ class SFButton:
         :param mouse:
         :return:
         """
-        print(str(mouse[0]) + " " + str(mouse[1]))
         if self.rect[0] < mouse[0] < (self.rect[0] + self.rect[2]) and self.rect[1] < mouse[1] < (self.rect[1] + self.rect[3]):
             return True
         return False

@@ -25,7 +25,7 @@ def render_everything():
 def run_main_loop():
     while True:  # main game loop
         draw_ui()
-        drawMousePos()
+        draw_mouse_pos()
 
         for event in pygame.event.get():
             if event.type == MOUSEBUTTONUP:
@@ -43,6 +43,8 @@ def run_main_loop():
 
 
 def setup_ui():
+    main_font = pygame.font.SysFont(None, 24)
+
     base_factory_tile = Duct(bg_color=Colors.dark_gray, rect=(0, 100, 400, 600))
     minimap_tile = Duct(bg_color=Colors.light_gray, rect=(0, 0, 1024, 100))
     visionrect_tile = Duct(bg_color=Colors.white, rect=(5, 5, 140, 90))
@@ -57,14 +59,18 @@ def setup_ui():
     app.buttons = []
     app.buttons.append(SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white))
 
+    app.labels = []
 
-def drawMousePos():
-    (mouseX, mouseY) = pygame.mouse.get_pos()
-    basicFont = pygame.font.SysFont(None, 48)
-    TextSurf = basicFont.render("X: " + str(mouseX) + " Y:" + str(mouseY), True, Colors.black)
-    TextRect = TextSurf.get_rect()
-    TextRect.center = ((mouseX + 10), (mouseY))
-    app.display_surface.blit(TextSurf, TextRect)
+    app.labels.append(main_font.render("Modul 1", 1, Colors.white))
+
+
+def draw_mouse_pos():
+    (mouse_x, mouse_y) = pygame.mouse.get_pos()
+    basic_font = pygame.font.SysFont(None, 48)
+    text_surf = basic_font.render("X: " + str(mouse_x) + " Y:" + str(mouse_y), True, Colors.black)
+    text_rect = text_surf.get_rect()
+    text_rect.center = ((mouse_x + 10), mouse_y)
+    app.display_surface.blit(text_surf, text_rect)
 
 
 def draw_ui():
@@ -75,6 +81,9 @@ def draw_ui():
     for button in app.buttons:
         button.draw(surface)
         button.write_text(surface)
+
+    for label in app.labels:
+        surface.blit(label, (170, 500))
 
 
 def draw_tile(tile):
