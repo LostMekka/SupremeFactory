@@ -2,20 +2,12 @@ from sf_button import SFButton
 from utils import Colors
 
 
-class Module(SFButton):
+class Module:
     type_empty = 0
     type_generator = 1
     type_hp = 2
     type_attack = 3
     type_range = 4
-
-    names = ["empty", "generator", "hp", "attack", "range"]
-    work_times = [0, 0, 1000, 1000, 1000]
-    build_times = [2000, 10000, 10000, 10000, 10000]
-    build_costs = [0, 10, 100, 100, 100]
-    actions = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range]
-    max_level = [1, 10, 10, 10, 10]
-    input_time = 800
 
     def _action_empty(self, unit):
         pass
@@ -29,18 +21,22 @@ class Module(SFButton):
     def _action_range(self, unit):
         unit.add_range(5 * self.level)
 
+    names = ["empty", "generator", "hp", "attack", "range"]
+    work_times = [0, 0, 1000, 1000, 1000]
+    build_times = [2000, 10000, 10000, 10000, 10000]
+    build_costs = [0, 10, 100, 100, 100]
+    actions = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range]
+    max_level = [1, 10, 10, 10, 10]
+    input_time = 800
+
     @staticmethod
     def get_build_cost(type):
         return build_costs[type]
 
-    def __init__(self, pos, pass_unit_callback, button_callback):
-
-        # Button stuff
-        SFButton.__init__(self, self.calc_module_pos(self.pos), Colors.light_gray, self.get_type_name(), Colors.white,
-                          button_callback)
-
+    def __init__(self, pos, pass_unit_callback, screen_rect):
         self.pos = pos
         self.pass_unit_callback = pass_unit_callback
+        self.screen_rect = screen_rect
         self._dirs = [True, False, False, False]
         self._dir_count = 1
         self._curr_dir = 0
@@ -58,9 +54,9 @@ class Module(SFButton):
         return Module.names[self.type]
 
     def toggle_target_dir(self, dir):
-        if (pos[0] == 0 and dir == 2) or \
-                (pos[1] == 0 and dir == 1) or \
-                (pos[1] == Factory.module_count_y - 1 and dir == 3):
+        if (self.pos[0] == 0 and dir == 2) or \
+                (self.pos[1] == 0 and dir == 1) or \
+                (self.pos[1] == Factory.module_count_y - 1 and dir == 3):
             return
         if self._dirs[dir]:
             self._dir_count -= 1

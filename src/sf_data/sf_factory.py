@@ -1,5 +1,5 @@
 from utils import *
-from fs_module import *
+from sf_data.sf_module import Module
 
 class Factory:
     
@@ -8,16 +8,19 @@ class Factory:
     _unit_creation_time = 5000
     _unit_creation_pos = (0, _module_count_y - 1)
     
-    def __init__(self, team, put_unit_callback):
+    def __init__(self, team, put_unit_callback, screen_rect):
         self.team = team
         self.put_unit_callback = put_unit_callback
         self.unit_count = 0
         self.max_unit_count = 10
         self.modules = []
         self.timer = Factory._unit_creation_time
+        w = screen_rect[2] / Factory._module_count_x
+        h = screen_rect[3] / Factory._module_count_y
         for y in range(0, Factory._module_count_y-1):
             for x in range(0, Factory._module_count_x-1):
-                modules.append(Module((x, y), pass_unit_callback))
+                r = (x*w, y*h, w, h)
+                self.modules.append(Module((x, y), self.pass_unit_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
         if module.pos[1] >= Factory._module_count_x - 1:
