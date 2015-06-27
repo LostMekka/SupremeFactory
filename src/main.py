@@ -1,15 +1,10 @@
 import pygame, sys
 from pygame.locals import *
-from sf_tiles import sf_factory, sf_minimap, sf_battlefield
-
-factory_tile = sf_factory.Factory()
-minimap_tile = sf_minimap.Minimap()
-battlefield_tile = sf_battlefield.Battlefield()
+from sf_tiles import sf_tile
 
 def draw_ui():
-    pygame.draw.rect(DISPLAYSURF, factory_tile.bg_color, factory_tile.rect)
-    pygame.draw.rect(DISPLAYSURF, minimap_tile.bg_color, minimap_tile.rect)
-    pygame.draw.rect(DISPLAYSURF, battlefield_tile.bg_color, battlefield_tile.rect)
+    for tile in sf_tile.tiles:
+        pygame.draw.rect(DISPLAYSURF, tile.bg_color, tile.rect)
 
 pygame.init()
 DISPLAYSURF = pygame.display.set_mode((1024, 700))

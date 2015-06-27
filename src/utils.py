@@ -10,3 +10,10 @@ class Duct(dict):
 
     def __setattr__(self, k, v):
         self[k] = v
+
+
+Colors = Duct(
+    white=(255, 255, 255),
+    light_gray=(200, 200, 200),
+    gray=(150, 150, 150)
+)
