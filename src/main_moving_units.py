@@ -19,9 +19,6 @@ def main():
 def update_everything():
     dt = 0.016 # TODO
     #update_units_move(dt)
-    update_unit_stuff(dt)
-
-def update_unit_stuff(dt):
     app.unit_stuff.update(dt)
 
 def update_units_move(dt):
@@ -31,10 +28,6 @@ def update_units_move(dt):
 def render_everything():
     surface = app.display_surface
     surface.fill((64, 64, 64))
-    #render_units()
-    render_unit_stuff()
-
-def render_unit_stuff():
     surface = app.display_surface
     app.unit_stuff.draw(surface)
 
