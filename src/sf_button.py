@@ -34,7 +34,7 @@ class SFButton:
         return surface
     
     def press(self):
-        self.callback()
+        self.callback(self)
     
     def is_inside(self, point):
         return is_point_in_rect(mouse, self.rect)
