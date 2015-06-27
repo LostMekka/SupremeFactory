@@ -25,8 +25,10 @@ def render_everything():
 def run_main_loop():
     while True:  # main game loop
         for event in pygame.event.get():
+            if event.type == MOUSEBUTTONDOWN:
+                on_mouse_down(pygame.mouse.get_pos())
             if event.type == MOUSEBUTTONUP:
-                check_button_press(pygame.mouse.get_pos())
+                on_mouse_up(pygame.mouse.get_pos())
 
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
@@ -85,12 +87,15 @@ def draw_tile(tile):
     pygame.draw.rect(surface, tile.bg_color, tile.rect)
 
 
-def check_button_press(mouse_pos):
+def on_mouse_down(pos):
     for button in app.buttons:
-        if button.is_pressed(mouse_pos):
+        if button.is_pressed(pos):
             return button.text
         else:
             return None
+
+def on_mouse_up(pos):
+    pass
 
 
 if __name__ == "__main__":
