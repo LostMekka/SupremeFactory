@@ -30,9 +30,9 @@ class Module:
     def get_build_cost(type):
         return build_costs[type]
     
-    def __init__(self, pos, give_unit_callback):
+    def __init__(self, pos, pass_unit_callback):
         self.pos = pos
-        self.give_unit_callback = give_unit_callback
+        self.pass_unit_callback = pass_unit_callback
         self._dirs = [True, False, False, False]
         self._dir_count = 1
         self._curr_dir = 0
@@ -158,7 +158,7 @@ class Module:
         if self.work_timer <= 0:
             self.work_timer = 0
             self._next_dir()
-            if give_unit_callback(self, unit, self._curr_dir):
+            if pass_unit_callback(self, unit, self._curr_dir):
                 unit = None
     
     def _next_dir(self):
