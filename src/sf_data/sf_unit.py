@@ -18,6 +18,26 @@ def unit_stuff():
 
 
 
+def elefant_surfaces():
+    anim_paths  = ["../assets/friend"+str(i)+".png" for i in range(1,4)]
+    anim_surfs  = [pygame.image.load(path) for path in anim_paths]
+    return anim_surfs
+
+elefant_surfaces = elefant_surfaces()
+
+
+
+def create_larva():
+    return create_elefant()
+
+
+def create_elefant():
+    sprite          = BfUnit(
+        anim    = Anim(elefant_surfaces),
+        move    = UnitMove(5))
+    return sprite
+
+
 class Anim:
 
     def __init__(self, surfs):
