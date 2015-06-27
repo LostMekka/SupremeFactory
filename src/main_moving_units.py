@@ -1,6 +1,5 @@
 import pygame, sys
 from pygame.locals import *
-from sf_tiles import sf_tile
 from sf_data import sf_unit
 from utils import *
 
