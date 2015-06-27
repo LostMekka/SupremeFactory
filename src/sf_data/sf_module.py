@@ -50,11 +50,16 @@ class Module:
         return Module.names[self.type]
     
     def toggle_target_dir(self, dir):
+        if (pos[0] == 0 and dir == 2) or \
+        (pos[1] == 0 and dir == 1) or \
+        (pos[1] == Factory.module_count_y - 1 and dir == 3):
+            return;
         if self._dirs[dir]:
             self._dir_count -= 1
+            self._dirs[dir] = False;
         else:
             self._dir_count += 1
-        self._dirs[dir] = not self._dirs[dir]
+            self._dirs[dir] = True;
     
     def uses_target_dir(self, dir):
         return self._dirs[dir]
