@@ -50,15 +50,15 @@ class SFButton:
                 self.callback(self)
     
     def is_inside(self, point):
-        return is_point_in_rect(mouse, self.rect)
+        return is_point_in_rect(point, self.rect)
     
-    def press_if_inside(self, mouse):
+    def press_if_inside(self, point):
         """
         Calls callback and returns true if the given mouse (x,y) is within the button's bounds
         :param mouse:
         :return:
         """
-        if is_point_in_rect(mouse, self.rect):
+        if is_point_in_rect(point, self.rect):
             if self.active:
                 self.press()
             return True
