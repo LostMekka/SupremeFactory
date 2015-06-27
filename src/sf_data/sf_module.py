@@ -1,4 +1,7 @@
-class Module:
+from sf_button import SFButton
+from utils import Colors
+
+class Module(SFButton):
 
     type_empty = 0
     type_generator = 1
@@ -30,7 +33,12 @@ class Module:
     def get_build_cost(type):
         return build_costs[type]
     
-    def __init__(self, pos, give_unit_callback):
+    def __init__(self, pos, give_unit_callback, button_callback):
+
+        # Button stuff
+        SFButton.__init__(self, self.calc_module_pos(self.pos), Colors.light_gray, self.get_type_name(), Colors.white,
+                          button_callback)
+
         self.pos = pos
         self.give_unit_callback = give_unit_callback
         self._dirs = [True, False, False, False]
@@ -167,4 +175,3 @@ class Module:
             if self._dirs[dir]:
                 self._curr_dir = dir
                 return
-    
