@@ -20,6 +20,9 @@ def is_point_in_rect(point, rect, mode = 1):
     return rect[0] <= point[0] < (rect[0] + rect[2]) and \
            rect[1] <= point[1] < (rect[1] + rect[3])
 
+def get_rect_middle(rect):
+    return (rect[0] + rect[2] / 2, rect[1] + rect[3] / 2)
+
 class Duct(dict):
     '''
     duck = Duct(voice = "quack", mass = 0.6)
