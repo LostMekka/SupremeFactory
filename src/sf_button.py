@@ -1,5 +1,5 @@
 import pygame
-
+from utils import *
 
 class SFButton:
     def __init__(self, rect, color, text, text_color, callback):
@@ -32,19 +32,21 @@ class SFButton:
         pygame.draw.rect(surface, self.color, self.rect, 0)
         pygame.draw.rect(surface, (190, 190, 190), self.rect, 1)
         return surface
-
-    def is_pressed(self, mouse):
+    
+    def press(self):
+        self.callback()
+    
+    def is_inside(self, point):
+        return is_point_in_rect(mouse, self.rect)
+    
+    def press_if_inside(self, mouse):
         """
         Calls callback and returns true if the given mouse (x,y) is within the button's bounds
         :param mouse:
         :return:
         """
-        if self.rect[0] < mouse[0] < (self.rect[0] + self.rect[2]) and self.rect[1] < mouse[1] < (
-            self.rect[1] + self.rect[3]):
-            try:
-                self.callback()
-            except TypeError:
-                print(self.text + "'s callback is of type " + str(type(self.callback)) + ". Y U NO MAKE IT CALLABLE?")
+        if is_point_in_rect(mouse, self.rect):
+            self.press()
             return True
         return False
 
