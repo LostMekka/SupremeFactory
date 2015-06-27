@@ -28,11 +28,13 @@ def render_everything():
 def run_main_loop():
     while True:  # main game loop
 
-        mouse = pygame.mouse.get_pos()
-        if app.testbutton.is_pressed(mouse):
-            print("FOOBAR")
-
         for event in pygame.event.get():
+            if event.type == MOUSEBUTTONUP:
+                mouse_pos = pygame.mouse.get_pos()
+                button_text = check_button_press(mouse_pos)
+                if button_text:
+                    print(button_text)
+
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
@@ -53,7 +55,8 @@ def setup_ui():
         battlefield_tile
     ]
 
-    app.testbutton = SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white)
+    app.buttons = []
+    app.buttons.append(SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white))
 
 
 def draw_ui():
@@ -62,14 +65,19 @@ def draw_ui():
     for tile in app.tiles:
         pygame.draw.rect(surface, tile.bg_color, tile.rect)
 
-    app.testbutton.draw(surface)
-    app.testbutton.write_text(surface)
+    for button in app.buttons:
+        button.draw(surface)
+        button.write_text(surface)
 
 
 def draw_tile(tile):
     surface = app.display_surface
     pygame.draw.rect(surface, tile.bg_color, tile.rect)
 
+def check_button_press(mouse_pos):
+    for button in app.buttons:
+        if button.is_pressed:
+            return button.text
 
 if __name__ == "__main__":
     main()
