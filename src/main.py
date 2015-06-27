@@ -25,14 +25,10 @@ def render_everything():
 def run_main_loop():
     while True:  # main game loop
         draw_ui()
-        draw_mouse_pos()
 
         for event in pygame.event.get():
             if event.type == MOUSEBUTTONUP:
-                mouse_pos = pygame.mouse.get_pos()
-                button_text = check_button_press(mouse_pos)
-                if button_text:
-                    print(button_text)
+                check_button_press(pygame.mouse.get_pos())
 
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
@@ -57,7 +53,9 @@ def setup_ui():
     ]
 
     app.buttons = []
-    app.buttons.append(SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white))
+    app.buttons.append(
+        SFButton((50, 600, 100, 50), Colors.green, "FOR THE BUTTON!", Colors.white, foo)
+    )
 
     app.labels = []
 
@@ -84,6 +82,8 @@ def draw_ui():
 
     for label in app.labels:
         surface.blit(label, (170, 500))
+
+    # draw_mouse_pos()
 
 
 def draw_tile(tile):
