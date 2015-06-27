@@ -21,13 +21,13 @@ class Module(SFButton):
         pass
 
     def _action_hp(self, unit):
-        unit.hp += 10 * self.level
+        unit.add_hp(10 * self.level)
 
     def _action_attack(self, unit):
-        unit.attack += 1 * self.level
+        unit.add_attack(1 * self.level)
 
     def _action_range(self, unit):
-        unit.range += 5 * self.level
+        unit.add_range(5 * self.level)
 
     @staticmethod
     def get_build_cost(type):
