@@ -1,5 +1,5 @@
 from utils import *
-from sf_data.sf_module import Module
+import sf_data.sf_module
 
 class Factory:
     
@@ -20,7 +20,7 @@ class Factory:
         for y in range(0, Factory._module_count_y-1):
             for x in range(0, Factory._module_count_x-1):
                 r = (x*w, y*h, w, h)
-                self.modules.append(Module((x, y), self.pass_unit_callback, r))
+                self.modules.append(sf_data.sf_module.Module((x, y), self.pass_unit_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
         if module.pos[1] >= Factory._module_count_x - 1:

@@ -1,5 +1,4 @@
-from sf_button import SFButton
-from utils import Colors
+import sf_data.sf_factory
 
 
 class Module:
@@ -56,7 +55,7 @@ class Module:
     def toggle_target_dir(self, dir):
         if (self.pos[0] == 0 and dir == 2) or \
                 (self.pos[1] == 0 and dir == 1) or \
-                (self.pos[1] == Factory.module_count_y - 1 and dir == 3):
+                (self.pos[1] == sf_data.sf_factory.Factory.module_count_y - 1 and dir == 3):
             return
         if self._dirs[dir]:
             self._dir_count -= 1
