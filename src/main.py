@@ -148,15 +148,6 @@ class App(Duct):
         battlefield.create_some_units()
         self.battlefield = battlefield
 
-    def draw_mouse_pos(self):
-        (mouse_x, mouse_y) = pygame.mouse.get_pos()
-        fontname        = self.choose_fontname()
-        self.basic_font = pygame.font.SysFont(fontname, 48)
-        text_surf = basic_font.render("X: " + str(mouse_x) + " Y:" + str(mouse_y), True, Colors.black)
-        text_rect = text_surf.get_rect()
-        text_rect.center = ((mouse_x + 10), mouse_y)
-        self.display_surface.blit(text_surf, text_rect)
-
     def draw_ui(self):
         surface = self.display_surface
         for frame in self.frames.values():
@@ -167,8 +158,6 @@ class App(Duct):
 
         for label in self.labels:
             surface.blit(label, (170, 500))
-
-        # draw_mouse_pos()
 
     def update_buttons(self):
         if(self.selected_module):
