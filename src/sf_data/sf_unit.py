@@ -55,21 +55,26 @@ class Anim:
 
     def image(self):
         return self.surfs[self.index % len(self.surfs)]
+    
+    def flip(self):
+        from pygame.transform import flip
+        self.surfs = [flip(surf, True, False) for surf in self.surfs]
 
 
 
 class UnitMove:
 
-    def __init__(self, speed):
+    def __init__(self, pos, speed):
         import random
         if isinstance(speed, tuple):
             self.speed = random.uniform(*speed)
         else:
             self.speed = speed
-        self.pos = 0
+        self.pos = pos
 
-    def update(self, dt):
-        self.pos = self.pos + self.speed * dt
+    def update(self, dt, unit):
+        direction   = 1 if unit.team == 1 else -1
+        self.pos    = self.pos + self.speed * dt * direction
         
 class UnitFight:
 
@@ -88,6 +93,7 @@ class UnitFight:
         while self.__time > self.delay:
             if self.range != 0:
                 projectile = Projectile(
+                    team        = unit.team,
                     damage      = self.damage,
                     start_xy    = unit.rect.center,
                     start_pos   = unit.move.pos)
@@ -107,13 +113,15 @@ class Unit(Sprite):
         self.move   = move
         self.fight  = fight
         self.team   = team
+        if team == 2:
+            self.anim.flip()
         self.image  = self.anim.image()
         self.rect   = self.image.get_rect()
 
     def update(self, dt):
         self.anim.update(dt)
         self.fight.update(dt, self)
-        self.move.update(dt)
+        self.move.update(dt, self)
         self.image  = self.anim.image()
         self.rect.x = self.move.pos + self.bf.rect.x
         self.rect.y = self.bf.floor_y() - self.rect.h
@@ -136,17 +144,19 @@ class Unit(Sprite):
 
 class Projectile(Sprite):
 
-    def __init__(self, damage, start_xy, start_pos):
+    def __init__(self, damage, start_xy, start_pos, team):
         super(Projectile, self).__init__()
         self.damage     = damage
+        self.team       = team
         self.xy         = start_xy
         self.pos        = start_pos
         self.image      = projectile_image()
         self.rect       = self.image.get_rect()
 
     def update(self, dt):
+        direction       = 1 if self.team == 1 else -1
         x, y            = self.xy
-        self.xy         = (x + 180 * dt, y)
+        self.xy         = (x + 180 * dt * direction, y)
         self.rect.topleft = self.xy
 
 
