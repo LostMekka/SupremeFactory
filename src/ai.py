@@ -62,7 +62,7 @@ class AI:
                 gen.upgrade()
                 return
         # build other modules
-        if len(lists) > 0:
+        if len(self.lists) > 0:
             list = self.lists.pop()
             mod = list.pop()
             if mod.can_build_new():
