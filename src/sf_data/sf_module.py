@@ -1,3 +1,4 @@
+from utils import *
 import sf_data.sf_factory
 import config
 import pygame
@@ -23,12 +24,13 @@ class Module:
 
     names = ["empty", "generator", "hp", "attack", "range"]
     text_surfaces = None
-    work_times = [0, 0, 1000, 1000, 1000]
-    build_times = [2000, 10000, 10000, 10000, 10000]
+    work_times = [0, 0, 1, 1, 1]
+    build_times = [2, 10, 10, 10, 10]
     build_costs = [0, 10, 100, 100, 100]
     actions = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range]
     max_level = [1, 10, 10, 10, 10]
     input_time = 800
+    text_color = (220, 220, 250)
 
     @staticmethod
     def get_build_cost(type):
@@ -38,6 +40,7 @@ class Module:
         self.pos = pos
         self.pass_unit_callback = pass_unit_callback
         self.screen_rect = screen_rect
+        self.screen_mid_point = get_rect_middle(self.screen_rect)
         self._dirs = [True, False, False, False]
         self._dir_count = 1
         self._curr_dir = 0
@@ -49,13 +52,13 @@ class Module:
         self.build_timer_max = 1
         self.work_timer_max = 1
         self.input_dir = 0
-        self.level = 0
+        self.level = 1
         if not Module.text_surfaces:
             Module.text_surfaces = []
             fontname    = config.app.choose_fontname()
             font        = pygame.font.SysFont(fontname, 15)
             for i in range(0, len(Module.names)):
-                s = font.render(Module.names[i], 1, (220, 220, 230))
+                s = font.render(Module.names[i], 1, Module.text_color)
                 Module.text_surfaces.append(s)
 
     def get_type_name(self):
@@ -84,29 +87,29 @@ class Module:
         return not (self.is_passive() or self.unit or self.is_building())
 
     def is_waiting(self):
-        return not self.is_passive() and self.input_timer >= 0
+        return not self.is_passive() and self.input_timer > 0
 
     def is_working(self):
-        return self.is_passive() or self.work_timer >= 0
+        return self.is_passive() or self.work_timer > 0
 
     def is_building(self):
-        return self.build_timer >= 0
+        return self.build_timer > 0
 
     # progress
     def get_input_progress(self):
         if not self.is_waiting():
             return 0
-        return (Module.input_time - self.input_timer) / Module.input_time
+        return 1 - self.input_timer / Module.input_time
 
     def get_work_progress(self):
         if not self.is_working():
             return 0
-        return (self.work_timer) / self.work_timer_max
+        return 1 - self.work_timer / self.work_timer_max
 
     def get_build_progress(self):
         if not self.is_building():
             return 0
-        return (self.build_timer) / self.build_timer_max
+        return 1 - self.build_timer / self.build_timer_max
 
     # methods for abilities
     def can_build_new(self):
@@ -192,4 +195,20 @@ class Module:
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
         surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
                         (r[1] + r[3] / 4) - t.get_height() / 2))
+        if self.is_passive():
+            return
+        progress = -1
+        col = (70, 70, 255)
+        if self.is_working():
+            progress = self.get_work_progress()
+        if self.is_building():
+            progress = self.get_build_progress()
+            col = Module.text_color
+        if progress >= 0:
+            b = 4
+            h = 6
+            pr1 = (r[0]+b, r[1]+r[3]-b-h, r[2]-2*b, h)
+            pr2 = (pr1[0], pr1[1], pr1[2]*progress, pr1[3])
+            pygame.draw.rect(surface, col, pr1, 1)
+            pygame.draw.rect(surface, col, pr2, 0)
     

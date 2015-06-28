@@ -42,12 +42,15 @@ class App(Duct):
 
     def update_everything(self):
         dt  = 0.016 # TODO
+        self.factory1.update(dt)
         self.battlefield.update(dt)
 
     def draw_everything(self):
         surface = self.display_surface
         self.draw_ui()
         self.factory1.draw(surface)
+        if self.selected_module:
+            pygame.draw.rect(surface, (255, 255, 255), self.selected_module.screen_rect, 1)
         self.battlefield.draw(surface)
 
     def run_main_loop(self):
@@ -127,7 +130,7 @@ class App(Duct):
 
     def new_game(self):
         ffr = self.frames.factory_frame.inner[0].rect
-        frect = (ffr[0], ffr[1], ffr[2] - self.spawn_width, ffr[3])
+        frect = (ffr[0], ffr[1]+20, ffr[2] - self.spawn_width, ffr[3]-20)
         self.factory1 = Factory(1, self.on_put_unit, frect)
 
         battlefield    = Battlefield(
@@ -220,13 +223,16 @@ class App(Duct):
         self.drag_start = None
     
     def on_build_press(self, type):
-        print("build ", type, " pressed!")
+        if self.selected_module:
+            self.selected_module.build_new(type)
     
     def on_upgrade_press(self, object):
-        print("upgrade pressed!")
+        if self.selected_module:
+            self.selected_module.upgrade()
         
     def on_sell_press(self, object):
-        print("sell pressed!")
+        if self.selected_module:
+            self.selected_module.sell()
     
     def on_put_unit(self, unit):
         # TODO: insert unit
