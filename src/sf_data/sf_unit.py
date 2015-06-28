@@ -11,7 +11,7 @@ def create_larva(team):
     return Unit(
         bf      = None,
         anim    = larva_anim(),
-        move    = UnitMove(pos = 0, speed = 8),
+        move    = UnitMove(pos = 0, speed = 0.3),
         fight   = UnitFight(damage = 1, range = 0),
         team    = team,
         in_factory = True)
