@@ -10,6 +10,7 @@ class Module:
     type_hp = 2
     type_attack = 3
     type_range = 4
+    type_speed = 5
 
     def _action_empty(self, unit):
         pass
