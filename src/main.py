@@ -208,6 +208,8 @@ class App(Duct):
             self.drag_start = pos
             return
         # no module clicked. maybe a button?
+        self.selected_module = None
+        self.update_buttons
         button = None
         for b in self.buttons.values():
             if b.is_inside(pos):
