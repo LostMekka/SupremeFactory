@@ -51,7 +51,7 @@ def load_blubb_surfaces():
 
 @cached
 def load_empty():
-    return pygame.Surface((0, 0))
+    return pygame.image.load("./assets/empty_blank.png")
 
 @cached
 def load_speed():
@@ -67,13 +67,12 @@ def load_hp():
 
 @cached
 def load_range():
-    # TODO return pygame.image.load("./assets/range_blank.png")
+    return pygame.image.load("./assets/range_blank.png")
     return load_empty()
 
 @cached
 def load_generator():
-    # TODO return pygame.image.load("./assets/generator_blank.png")
-    return load_empty()
+    return pygame.image.load("./assets/power_blank.png")
 
 
 
