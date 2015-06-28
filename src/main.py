@@ -57,7 +57,14 @@ class App(Duct):
         while True:  # main game loop
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
-                    self.on_key_down(event.key)
+                    if event.key == pygame.K_d:
+                        self.toggle_dir(0)
+                    if event.key == pygame.K_w:
+                        self.toggle_dir(1)
+                    if event.key == pygame.K_a:
+                        self.toggle_dir(2)
+                    if event.key == pygame.K_s:
+                        self.toggle_dir(3)
                 if event.type == MOUSEBUTTONDOWN:
                     self.on_mouse_down(pygame.mouse.get_pos())
                 if event.type == MOUSEBUTTONUP:
@@ -125,7 +132,8 @@ class App(Duct):
             self.build_buttons.append(btn)
         self.buttons.upgrade = SFButton(getrekt(mn+1.5), None, "Upgrade", None, self.on_upgrade_press, None)
         self.buttons.sell = SFButton(getrekt(mn+3), None, "Sell", None, self.on_sell_press, None)
-        self.select_module(None)
+        self.selected_module = None
+        self.update_buttons()
         
         self.labels = []
         #self.labels.append(self.main_font.render("Modul 1", 1, Colors.white))
@@ -183,6 +191,10 @@ class App(Duct):
             self.buttons.upgrade.set_deactivated()
             self.buttons.sell.set_deactivated()
 
+    def toggle_dir(self, dir):
+        if self.selected_module:
+            self.selected_module.toggle_target_dir(dir)
+
     def on_mouse_down(self, pos):
         # hit a module? if yes, select it and start drag
         module = None
@@ -221,7 +233,7 @@ class App(Duct):
                         dir = 3
                     else:
                         dir = 1
-                self.selected_module.toggle_target_dir(dir)
+                self.toggle_dir(dir)
         self.drag_start = None
     
     def on_build_press(self, type):
