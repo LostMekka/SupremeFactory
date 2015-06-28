@@ -2,6 +2,7 @@ from utils import *
 from pygame.sprite import *
 from sf_data.sf_unit import *
 from pygame import Rect
+from images import load_elefant_surfaces
 
 
 
@@ -25,7 +26,7 @@ class Battlefield:
         unit        = Unit(
             bf          = self,
             team        = team,
-            anim        = Anim(elefant_surfaces),
+            anim        = Anim(load_elefant_surfaces()),
             move        = UnitMove(start_pos, speed = (8, 12)),
             fight       = UnitFight((5,8), range = 5))
         return unit

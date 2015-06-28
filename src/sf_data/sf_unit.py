@@ -2,22 +2,14 @@ from utils import *
 import random as R
 import pygame
 from pygame.sprite import *
+from images import *
 
 
-
-def elefant_surfaces():
-    anim_paths  = ["./assets/friend"+str(i)+".png" for i in range(1,4)]
-    anim_surfs  = [pygame.image.load(path) for path in anim_paths]
-    return anim_surfs
-
-elefant_surfaces = elefant_surfaces()
-
-larva_surfaces = elefant_surfaces
 
 def create_larva(team):
     return Unit(
         bf      = None,
-        anim    = Anim(larva_surfaces),
+        anim    = Anim(load_larva_surfaces()),
         move    = UnitMove(pos = 0, speed = 8),
         fight   = UnitFight(damaga = 1, range = 0),
         team    = team,
