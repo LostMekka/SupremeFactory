@@ -9,12 +9,14 @@ from images import *
 class Battlefield:
 
     def __init__(self, rect):
-        self.rect           = Rect(rect)
-        self.units_group    = Group()
-        self.projectile_group = Group()
         self.size = 30
         self.first_unit_1 = None
         self.first_unit_2 = None
+        self.rect               = Rect(rect)
+        self.units_group        = LayeredDirty()
+        self.units_group.set_clip(rect)
+        self.projectile_group   = LayeredDirty()
+        self.units_group.set_clip(rect)
         self.unit_count_1 = 0
         self.unit_count_2 = 0
         self.draw_offset = 0

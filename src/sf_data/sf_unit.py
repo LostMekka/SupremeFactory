@@ -68,7 +68,7 @@ class UnitFight:
 
 
 
-class Unit(Sprite):
+class Unit(DirtySprite):
 
     # 
     # access .rect if you want to draw when .in_factory == True
@@ -84,10 +84,13 @@ class Unit(Sprite):
         self.drop   = None
         self.fight  = fight
         self.team   = team
+        self.dirty = 2
         self.image  = self.anim.image()
         if team == 2:
             self.anim.flip()
         self.rect   = self.image.get_rect()
+        # TODO hack, so no phantom larva is on the top left of the window
+        self.rect.topleft = (-1000, -1000)
 
     def update_in_factory(self, dt):
         self.anim.update(dt)
@@ -134,7 +137,7 @@ class Unit(Sprite):
         pass    
 
 
-class Projectile(Sprite):
+class Projectile(DirtySprite):
 
     def __init__(self, damage, start_pos, target, team, battlefield):
         super(Projectile, self).__init__()
@@ -144,6 +147,7 @@ class Projectile(Sprite):
         self.pos        = start_pos
         self.start_pos  = start_pos
         self.target     = target
+        self.dirty      = 2
         self.image      = projectile_image()
         if team == 2:
             self.image      = pygame.transform.flip(self.image, True, False)
