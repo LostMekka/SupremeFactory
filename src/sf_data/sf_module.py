@@ -23,18 +23,21 @@ class Module:
     def _action_range(self, unit):
         unit.add_range(5 * self.level)
 
-    names       = ["empty", "generator", "hp", "attack", "range"]
+    def _action_speed(self, unit):
+        unit.add_speed(1 * self.level)
+
+    names       = ["empty", "generator", "hp", "attack", "range", "speed"]
     text_surfaces = None
-    work_times  = [0, 0, 1, 1, 1]
-    build_times = [2, 10, 10, 10, 10]
-    build_costs = [0, 10, 100, 100, 100]
-    actions     = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range]
-    max_level   = [1, 10, 10, 10, 10]
+    work_times  = [0, 0, 1, 1, 1, 1]
+    build_times = [2, 10, 10, 10, 10, 10]
+    build_costs = [0, 10, 100, 100, 100, 100]
+    actions     = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range, _action_speed]
+    max_level   = [1, 10, 10, 10, 10, 10]
     input_time  = 0.8
     text_color  = (220, 220, 250)
     bg_surf     = [images.load_empty,
         images.load_generator, images.load_hp,
-        images.load_attack, images.load_range]
+        images.load_attack, images.load_range, images.load_speed]
 
     @staticmethod
     def get_build_cost(type):
