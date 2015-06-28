@@ -32,7 +32,7 @@ class Factory:
                 self.modules.append(sf_data.sf_module.Module((x, y), self.pass_unit_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
-        if module.pos[0] >= Factory._module_count_x - 1:
+        if module.pos[0] >= Factory._module_count_x - 1 and dir == 0:
             self.put_unit_callback(unit)
             return True
         next = self.get_adjacent_module(module.pos, dir)
