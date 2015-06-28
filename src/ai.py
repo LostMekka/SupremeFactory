@@ -8,6 +8,8 @@ class AI:
         factory.get_module((2, 0)).set_target_dir(2, True)
         factory.get_module((0, 1)).set_target_dir(0, False)
         factory.get_module((0, 1)).set_target_dir(1, True)
+        factory.get_module((1, 1)).set_target_dir(0, False)
+        factory.get_module((2, 1)).set_target_dir(0, False)
         factory.get_module((3, 1)).set_target_dir(0, False)
         factory.get_module((3, 1)).set_target_dir(1, True)
         factory.get_module((3, 1)).set_target_dir(3, True)
