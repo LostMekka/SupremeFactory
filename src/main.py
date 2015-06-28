@@ -130,7 +130,7 @@ class App(Duct):
         self.factory1 = Factory(1, self.on_put_unit, frect)
 
         battlefield    = Battlefield(
-            rect    = self.frames.battlefield_frame.rect)
+            rect    = self.frames.battlefield_frame.outer.rect)
         battlefield.create_some_units()
         self.battlefield = battlefield
 

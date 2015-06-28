@@ -87,7 +87,10 @@ class UnitFight:
         self.__time = self.__time + dt
         while self.__time > self.delay:
             if self.range != 0:
-                projectile = Projectile(self.damage, unit.move.pos, 820)
+                projectile = Projectile(
+                    damage      = self.damage,
+                    start_xy    = unit.rect.center,
+                    start_pos   = unit.move.pos)
                 unit.bf.projectile_group.add(projectile)
             else:
                 pass # TODO Nahkampf
@@ -97,12 +100,13 @@ class UnitFight:
 
 class Unit(Sprite):
 
-    def __init__(self, anim, move, fight, bf):
+    def __init__(self, anim, move, fight, bf, team):
         super(Unit, self).__init__()
         self.bf     = bf
         self.anim   = anim
         self.move   = move
         self.fight  = fight
+        self.team   = team
         self.image  = self.anim.image()
         self.rect   = self.image.get_rect()
 
@@ -111,7 +115,8 @@ class Unit(Sprite):
         self.fight.update(dt, self)
         self.move.update(dt)
         self.image  = self.anim.image()
-        self.rect.x = self.move.pos
+        self.rect.x = self.move.pos + self.bf.rect.x
+        self.rect.y = self.bf.floor_y() - self.rect.h
     
     def add_speed(self, v):
         self.move.speed += v
@@ -131,18 +136,18 @@ class Unit(Sprite):
 
 class Projectile(Sprite):
 
-    def __init__(self, damage, start, dest):
+    def __init__(self, damage, start_xy, start_pos):
         super(Projectile, self).__init__()
-        self.damage = damage
-        self.start  = start
-        self.dest   = dest
-        self.image  = projectile_image()
-        self.rect   = self.image.get_rect()
-        self.pos    = start
+        self.damage     = damage
+        self.xy         = start_xy
+        self.pos        = start_pos
+        self.image      = projectile_image()
+        self.rect       = self.image.get_rect()
 
     def update(self, dt):
-        self.pos        += 40 * dt
-        self.rect.x     = self.pos
+        x, y            = self.xy
+        self.xy         = (x + 180 * dt, y)
+        self.rect.topleft = self.xy
 
 
 
