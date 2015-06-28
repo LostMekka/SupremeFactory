@@ -7,7 +7,7 @@ class Factory:
     
     _module_count_x = 4
     _module_count_y = 3
-    _unit_creation_time = 5000
+    _unit_creation_time = 3
     _unit_creation_pos = (0, _module_count_y - 1)
     
     def __init__(self, team, put_unit_callback, screen_rect):
