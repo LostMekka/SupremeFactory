@@ -214,8 +214,10 @@ class Module:
                 self.change_callback(self)
 
     def _next_dir(self):
-        for x in range(1, 4):
-            dir = (self._curr_dir + x) % 4
+        curr_dir = self._curr_dir or 0
+        self._curr_dir = None
+        for x in range(1, 5):
+            dir = (curr_dir + x) % 4
             if self._dirs[dir]:
                 self._curr_dir = dir
                 return
