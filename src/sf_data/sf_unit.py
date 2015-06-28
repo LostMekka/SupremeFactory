@@ -39,14 +39,20 @@ class UnitFight:
         self.range = range
         self.damage = damage
         self.delay  = 4
-        self.__time = self.delay
-        
+        self.__time = 0
+        self.stand = False
+    
     def update(self, dt, unit):
         self.__time = max(0, self.__time - dt)
         target = unit.bf.first_unit_2 if unit.team == 1 else unit.bf.first_unit_1
+        d = abs(unit.move.pos - target.move.pos) if target else (
+                unit.bf.size-unit.move.pos if unit.team == 1 else unit.move.pos)
+        mr = 1
+        stand_melee = self.range == 0 and d <= mr
+        stand_ranged = self.range > 0 and (self.range > d or self.__time > 0)
+        self.stand = stand_melee or stand_ranged
         if self.__time == 0 and target:
-            d = abs(unit.move.pos - target.move.pos)
-            if self.range > 0 and self.range >= d:
+            if stand_ranged:
                 projectile = Projectile(
                     team        = unit.team,
                     damage      = self.damage,
@@ -54,9 +60,10 @@ class UnitFight:
                     target      = target,
                     battlefield = unit.bf)
                 unit.bf.projectile_group.add(projectile)
-            else:
-                pass # TODO Nahkampf
-            self.__time = self.__time - self.delay
+                self.__time = self.delay
+            elif stand_ranged:
+                target.damage(self.damage)
+                self.__time = self.delay
 
 
 
@@ -89,7 +96,8 @@ class Unit(Sprite):
     def update_on_battlefield(self, dt):
         self.anim.update(dt)
         self.fight.update(dt, self)
-        self.move.update(dt, self)
+        if not self.fight.stand:
+            self.move.update(dt, self)
         self.image  = self.anim.image()
         self.rect.center = (
             self.bf.rect.x + (self.move.pos - self.bf.draw_offset) * self.bf.draw_scale,
@@ -134,17 +142,17 @@ class Projectile(Sprite):
 
     def update(self, dt):
         direction       = 1 if self.team == 1 else -1
-        move = 180 * dt
-        s = abs(self.pos - self.target.move.pos)
-        d = abs(self.start_pos - self.target.move.pos)
-        h = -s * s / d + s
-        if move >= d:
+        move = 4 * dt
+        s = self.pos - self.target.move.pos
+        d = self.start_pos - self.target.move.pos
+        h = (-s * s / d + s) * direction
+        if s * d <= 0:
             self.target.damage(self.damage)
             self.kill()
         self.pos += move * direction
         self.rect.center = (
             self.bf.rect.x + (self.pos - self.bf.draw_offset) * self.bf.draw_scale,
-            self.bf.rect.bottom - config.app.floor_height - h - 30
+            self.bf.rect.bottom - config.app.floor_height + h*self.bf.draw_scale - 30
         )
 
 

@@ -12,7 +12,7 @@ class Battlefield:
         self.rect           = Rect(rect)
         self.units_group    = Group()
         self.projectile_group = Group()
-        self.size = 200
+        self.size = 30
         self.first_unit_1 = None
         self.first_unit_2 = None
         self.unit_count_1 = 0
@@ -32,9 +32,9 @@ class Battlefield:
         unit        = Unit(
             bf          = self,
             team        = team,
-            move        = UnitMove(0, speed = (1, 2)),
+            move        = UnitMove(0, speed = 2),
             anim        = blubb_anim(),
-            fight       = UnitFight((5,8), range = 5))
+            fight       = UnitFight(damage = 1, range = 5))
         return unit
 
     def add_unit(self, unit):
@@ -45,9 +45,9 @@ class Battlefield:
         self.units_group.add(unit)
     
     def on_kill(self, unit):
-        if unit is self.fist_unit_1:
+        if unit is self.first_unit_1:
             self.first_unit_1 = None
-        if unit is self.fist_unit_2:
+        if unit is self.first_unit_2:
             self.first_unit_2 = None
             unit.kill()
     
@@ -69,6 +69,8 @@ class Battlefield:
                 if unit.move.pos < max2:
                     max2 = unit.move.pos
                     self.first_unit_2 = unit
+        
+        for unit in self.units_group.sprites():
             unit.update_on_battlefield(dt)
         self.projectile_group.update(dt)
 
