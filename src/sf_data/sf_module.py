@@ -188,7 +188,8 @@ class Module:
     
     def draw(self, surface):
         r = self.screen_rect
+        t = Module.text_surfaces[self.type]
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
-        surface.blit(this_text, ((r[0] + r[2] / 2) - this_text.get_width() / 2,
-                                 (r[1] + r[3] / 4) - this_text.get_height() / 2))
+        surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
+                        (r[1] + r[3] / 4) - t.get_height() / 2))
     
