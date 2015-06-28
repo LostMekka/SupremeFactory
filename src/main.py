@@ -62,9 +62,18 @@ class App(Duct):
     def run_main_loop(self):
         while True:  # main game loop
             for event in pygame.event.get():
-                if event.type == MOUSEBUTTONDOWN:
+                if event.type == KEYDOWN:
+                    if event.key == pygame.K_d:
+                        self.toggle_dir(0)
+                    if event.key == pygame.K_w:
+                        self.toggle_dir(1)
+                    if event.key == pygame.K_a:
+                        self.toggle_dir(2)
+                    if event.key == pygame.K_s:
+                        self.toggle_dir(3)
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
                     self.on_mouse_down(pygame.mouse.get_pos())
-                if event.type == MOUSEBUTTONUP:
+                if event.type == MOUSEBUTTONUP and event.button == 1:
                     self.on_mouse_up(pygame.mouse.get_pos())
 
                 if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -129,16 +138,15 @@ class App(Duct):
                 getrekt(t), None, text, None, self.on_build_press, t)
             self.buttons[text]  = btn
             self.build_buttons.append(btn)
-        self.buttons.upgrade    = SFButton(
-            getrekt(mn+1.5), None, "Upgrade", None, self.on_upgrade_press, None)
-        self.buttons.sell       = SFButton(
-            getrekt(mn+3), None, "Sell", None, self.on_sell_press, None)
-
+        self.buttons.upgrade = SFButton(getrekt(mn+1.5), None, "Upgrade", None, self.on_upgrade_press, None)
+        self.buttons.sell = SFButton(getrekt(mn+3), None, "Sell", None, self.on_sell_press, None)
+        self.selected_module = None
+        self.update_buttons()
+        
+        # add button.sprites to .buttons_group
         self.buttons_group = pygame.sprite.LayeredUpdates()
         for btn in self.buttons.values():
             self.buttons_group.add(btn.sprites())
-
-        self.select_module(None)
         
         self.labels = []
         #self.labels.append(self.main_font.render("Modul 1", 1, Colors.white))
@@ -146,21 +154,12 @@ class App(Duct):
     def new_game(self):
         ffr = self.frames.factory_frame.inner[0].rect
         frect = (ffr[0], ffr[1]+20, ffr[2] - self.spawn_width, ffr[3]-20)
-        self.factory1 = Factory(1, self.on_put_unit, frect)
+        self.factory1 = Factory(1, self.on_put_unit, self.on_module_changed, frect)
 
         battlefield    = Battlefield(
             rect    = self.frames.battlefield_frame.outer.rect)
         battlefield.create_some_units()
         self.battlefield = battlefield
-
-    def draw_mouse_pos(self):
-        (mouse_x, mouse_y) = pygame.mouse.get_pos()
-        fontname        = self.choose_fontname()
-        self.basic_font = pygame.font.SysFont(fontname, 48)
-        text_surf = basic_font.render("X: " + str(mouse_x) + " Y:" + str(mouse_y), True, Colors.black)
-        text_rect = text_surf.get_rect()
-        text_rect.center = ((mouse_x + 10), mouse_y)
-        self.display_surface.blit(text_surf, text_rect)
 
     def draw_ui(self):
         surface = self.display_surface
@@ -176,19 +175,22 @@ class App(Duct):
         #print(b-a, c-b, d-c)
         # draw_mouse_pos()
 
-    def select_module(self, module):
-        self.selected_module = module
-        if(module):
+    def on_module_changed(self, module):
+        if module is self.selected_module:
+            self.update_buttons()
+
+    def update_buttons(self):
+        if self.selected_module:
             for b in self.build_buttons:
-                if module.can_build_new():
+                if self.selected_module.can_build_new():
                     b.set_available()
                 else:
                     b.set_unavailable()
-            if module.can_upgrade():
+            if self.selected_module.can_upgrade():
                 self.buttons.upgrade.set_available()
             else:
                 self.buttons.upgrade.set_unavailable()
-            if module.can_sell():
+            if self.selected_module.can_sell():
                 self.buttons.sell.set_available()
             else:
                 self.buttons.sell.set_unavailable()
@@ -198,6 +200,10 @@ class App(Duct):
             self.buttons.upgrade.set_deactivated()
             self.buttons.sell.set_deactivated()
 
+    def toggle_dir(self, dir):
+        if self.selected_module:
+            self.selected_module.toggle_target_dir(dir)
+
     def on_mouse_down(self, pos):
         # hit a module? if yes, select it and start drag
         module = None
@@ -206,7 +212,8 @@ class App(Duct):
                 module = m
                 break
         if module:
-            self.select_module(module)
+            self.selected_module = module
+            self.update_buttons()
             self.drag_start = pos
             return
         # no module clicked. maybe a button?
@@ -217,6 +224,10 @@ class App(Duct):
                 break
         if button:
             button.press()
+            return
+        # nothing to press? deselect
+        self.selected_module = None
+        self.update_buttons
 
     def on_mouse_up(self, pos):
         if self.drag_start and self.selected_module:
@@ -235,7 +246,7 @@ class App(Duct):
                         dir = 3
                     else:
                         dir = 1
-                self.selected_module.toggle_target_dir(dir)
+                self.toggle_dir(dir)
         self.drag_start = None
     
     def on_build_press(self, type):

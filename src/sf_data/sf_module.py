@@ -2,6 +2,7 @@ from utils import *
 import sf_data.sf_factory
 import config
 import pygame
+import images
 
 class Module:
     type_empty = 0
@@ -36,9 +37,10 @@ class Module:
     def get_build_cost(type):
         return build_costs[type]
 
-    def __init__(self, pos, pass_unit_callback, screen_rect):
+    def __init__(self, pos, pass_unit_callback, change_callback, screen_rect):
         self.pos = pos
         self.pass_unit_callback = pass_unit_callback
+        self.change_callback = change_callback
         self.screen_rect = screen_rect
         self.screen_mid_point = get_rect_middle(self.screen_rect)
         self._dirs = [True, False, False, False]
@@ -53,7 +55,20 @@ class Module:
         self.work_timer_max = 1
         self.input_dir = 0
         self.level = 1
-        self.group = pygame.sprite.Group()
+        self.unit_group = pygame.sprite.Group()
+        self.arrow_group = pygame.sprite.Group()
+        asurf = images.load_arrows()
+        self.arrows = []
+        for dir in range(0, 4):
+            arrow = pygame.sprite.Sprite()
+            arrow.image = asurf[dir]
+            arrow.rect = arrow.image.get_rect()
+            self.arrows.append(arrow)
+        self.arrows[0].rect.center = (screen_rect[0]+screen_rect[2], screen_rect[1] + 0.75*screen_rect[3])
+        self.arrows[1].rect.center = (screen_rect[0]+0.75*screen_rect[2], screen_rect[1])
+        self.arrows[2].rect.center = (screen_rect[0], screen_rect[1] + 0.25*screen_rect[3])
+        self.arrows[3].rect.center = (screen_rect[0]+0.25*screen_rect[2], screen_rect[1] + screen_rect[3])
+        self.arrow_group.add(self.arrows[0])
         if not Module.text_surfaces:
             Module.text_surfaces = []
             fontname    = config.app.choose_fontname()
@@ -73,9 +88,11 @@ class Module:
         if self._dirs[dir]:
             self._dir_count -= 1
             self._dirs[dir] = False
+            self.arrow_group.remove(self.arrows[dir])
         else:
             self._dir_count += 1
             self._dirs[dir] = True
+            self.arrow_group.add(self.arrows[dir])
 
     def uses_target_dir(self, dir):
         return self._dirs[dir]
@@ -129,12 +146,13 @@ class Module:
     def receive_unit(self, unit, dir):
         if not self.can_receive_unit():
             return False
-        self.group.add(unit)
+        self.unit_group.add(unit)
         self.unit = unit
         self.input_dir = dir
         self.input_timer = Module.input_time
         self.work_timer_max = Module.work_times[self.type]
         self.work_timer = self.work_timer_max
+        self.change_callback(self)
         return True
 
     def build_new(self, type):
@@ -144,6 +162,8 @@ class Module:
         self.build_timer = self.build_timer_max
         self.type = type
         self.level = 1
+        self.change_callback(self)
+        return True
 
     def upgrade(self, type):
         if not self.can_upgrade():
@@ -152,6 +172,8 @@ class Module:
         self.build_timer = self.build_timer_max
         self.type = type
         self.level += 1
+        self.change_callback(self)
+        return True
 
     def sell(self):
         if not self.can_sell():
@@ -160,11 +182,15 @@ class Module:
         self.build_timer = self.build_timer_max
         self.type = Module.type_empty
         self.level = 1
+        self.change_callback(self)
+        return True
 
     def update(self, time):
         # building the module has priority
         if self.build_timer > 0:
             self.build_timer = max(0, self.build_timer - time)
+            if self.build_timer == 0:
+                self.change_callback(self)
             return
         # when not building: if we have no unit to work on, do nothing
         if not self.unit:
@@ -172,9 +198,10 @@ class Module:
         self.unit.update(time)
         self.unit.rect.center = self.get_unit_screen_pos()
         if self.input_timer > 0:
-            if time > self.input_timer:
+            if time >= self.input_timer:
                 time -= self.input_timer
                 self.input_timer = 0
+                self.change_callback(self)
             else:
                 self.input_timer -= time
                 return
@@ -183,8 +210,9 @@ class Module:
             self.work_timer = 0
             self._next_dir()
             if self.pass_unit_callback(self, self.unit, self._curr_dir):
-                self.group.remove(self.unit)
+                self.unit_group.remove(self.unit)
                 self.unit = None
+                self.change_callback(self)
 
     def _next_dir(self):
         for x in range(1, 4):
@@ -205,17 +233,18 @@ class Module:
         return (mid[0] - dir[0] * p * r[2], mid[1] - dir[1] * p * r[3])
     
     def draw(self, surface):
+        self.arrow_group.draw(surface)
+        self.unit_group.draw(surface)
+    
+    def draw_non_sprites(self, surface):
         r = self.screen_rect
         t = Module.text_surfaces[self.type]
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
         surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
                         (r[1] + r[3] / 4) - t.get_height() / 2))
-        self.group.draw(surface)
-        if self.is_passive():
-            return
         progress = -1
         col = (100, 100, 255)
-        if self.is_working():
+        if self.is_working() and not self.is_passive():
             progress = self.get_work_progress()
         if self.is_building():
             progress = self.get_build_progress()
