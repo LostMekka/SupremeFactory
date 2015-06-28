@@ -1,5 +1,6 @@
 import sf_data.sf_factory
-
+import config
+import pygame
 
 class Module:
     type_empty = 0
@@ -21,6 +22,7 @@ class Module:
         unit.add_range(5 * self.level)
 
     names = ["empty", "generator", "hp", "attack", "range"]
+    text_surfaces = None
     work_times = [0, 0, 1000, 1000, 1000]
     build_times = [2000, 10000, 10000, 10000, 10000]
     build_costs = [0, 10, 100, 100, 100]
@@ -48,6 +50,13 @@ class Module:
         self.work_timer_max = 1
         self.input_dir = 0
         self.level = 0
+        if not Module.text_surfaces:
+            Module.text_surfaces = []
+            fontname    = config.app.choose_fontname()
+            font        = pygame.font.SysFont(fontname, 15)
+            for i in range(0, len(Module.names)):
+                s = font.render(Module.names[i], 1, (220, 220, 230))
+                Module.text_surfaces.append(s)
 
     def get_type_name(self):
         return Module.names[self.type]
@@ -176,3 +185,10 @@ class Module:
             if self._dirs[dir]:
                 self._curr_dir = dir
                 return
+    
+    def draw(self, surface):
+        r = self.screen_rect
+        pygame.draw.rect(surface, (0, 0, 0), r, 1)
+        surface.blit(this_text, ((r[0] + r[2] / 2) - this_text.get_width() / 2,
+                                 (r[1] + r[3] / 4) - this_text.get_height() / 2))
+    

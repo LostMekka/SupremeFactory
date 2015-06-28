@@ -11,6 +11,8 @@ class Factory:
     def __init__(self, team, put_unit_callback, screen_rect):
         self.team = team
         self.put_unit_callback = put_unit_callback
+        self.screen_rect = screen_rect
+        self.hp = 1000
         self.unit_count = 0
         self.max_unit_count = 10
         self.modules = []
@@ -70,4 +72,9 @@ class Factory:
                 self.timer += Factory._unit_creation_time
                 unit = create_larva()
                 inmod.receive_unit(unit, 0)
+    
+    def draw(self, surface):
+        pygame.draw.rect(surface, (35, 35, 40), self.screen_rect, 0)
+        for m in self.modules:
+            m.draw(surface)
     

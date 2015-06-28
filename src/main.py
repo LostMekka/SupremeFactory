@@ -47,6 +47,7 @@ class App(Duct):
     def draw_everything(self):
         surface = self.display_surface
         self.draw_ui()
+        self.factory1.draw(surface)
         self.battlefield.draw(surface)
 
     def run_main_loop(self):
