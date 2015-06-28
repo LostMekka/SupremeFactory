@@ -7,15 +7,29 @@ from sf_data.sf_module import Module
 
 class Frame:
     def __init__(self, l_color, bg_color, rect):
-        self.rect = rect
-        self.l_color = l_color
-        self.bg_color = bg_color
-        
+        self.outer = Duct()
+        self.outer.rect = rect
+        self.outer.l_color = l_color
+        self.outer.bg_color = bg_color
+        self.inner = []
+    
+    def add_rect(self, rect, l_color, bg_color):
+        i = Duct()
+        i.rect = rect
+        i.l_color = l_color
+        i.bg_color = bg_color
+        self.inner.append(i)
+    
+    def _draw_inner(self, rect, surface):
+        if rect.bg_color:
+            pygame.draw.rect(surface, rect.bg_color, rect.rect, 0)
+        if rect.l_color:
+            pygame.draw.rect(surface, rect.l_color, rect.rect, 1)
+   
     def draw(self, surface):
-        if self.bg_color:
-            pygame.draw.rect(surface, self.bg_color, self.rect, 0)
-        if self.l_color:
-            pygame.draw.rect(surface, self.l_color, self.rect, 1)
+        for rect in self.inner:
+            self._draw_inner(rect, surface)
+        self._draw_inner(self.outer, surface)
 
 
 class App(Duct):
@@ -53,17 +67,28 @@ class App(Duct):
         ih = 200
         fw = 400
         bw = w - fw
-        self.frames = Duct(
-            minimap_frame = Frame(Colors.black, Colors.light_gray, (0, 0, w, mh)),
-            factory_frame = Frame(Colors.black, (70,70,70), (0, mh, fw, h-mh-ih)),
-            buttons_frame = Frame(Colors.black, (50,50,50), (0, h-ih, fw, ih)),
-            battlefield_frame = Frame(Colors.black, (150,150,150), (fw, mh, bw, h-mh-ih)),
-            info_frame = Frame(Colors.black, (100,100,100), (fw, h-ih, bw, ih))
-        )
+        flh = 50
+        sph = 50
+        mfh = flh * mh / (h-mh-ih)
+        self.frames = Duct()
         self.minimap_height = mh
         self.factory_width = fw
         self.battlefield_width = bw
         self.info_height = ih
+        self.floor_height = flh
+        self.minimap_floor_height = mfh
+        self.spawn_width = sph
+        self.frames.minimap_frame = Frame(Colors.black, None, (0, 0, w, mh))
+        self.frames.minimap_frame.add_rect((0, 0, w, mh-mfh), None, (0, 127, 155))
+        self.frames.minimap_frame.add_rect((0, mh-mfh, w, mfh), None, (110, 100, 70))
+        self.frames.factory_frame = Frame(Colors.black, None, (0, mh, fw, h-mh-ih))
+        self.frames.factory_frame.add_rect((0, mh, fw, h-mh-ih-flh), None, (0, 127, 155))
+        self.frames.factory_frame.add_rect((0, h-ih-flh, fw, flh), None, (110, 100, 70))
+        self.frames.buttons_frame = Frame(Colors.black, (50,50,50), (0, h-ih, fw, ih))
+        self.frames.battlefield_frame = Frame(Colors.black, None, (fw, mh, bw, h-mh-ih))
+        self.frames.battlefield_frame.add_rect((fw, mh, bw, h-mh-ih-flh), None, (0, 127, 155))
+        self.frames.battlefield_frame.add_rect((fw, h-ih-flh, bw, flh), None, (110, 100, 70))
+        self.frames.info_frame = Frame(Colors.black, (100,100,100), (fw, h-ih, bw, ih))
         
         bh = 20
         mn = 4
@@ -86,7 +111,9 @@ class App(Duct):
         #self.labels.append(self.main_font.render("Modul 1", 1, Colors.white))
 
     def new_game(self):
-        self.factory1 = Factory(1, self.on_put_unit, self.frames.factory_frame.rect)
+        ffr = self.frames.factory_frame.inner[0].rect
+        frect = (ffr[0], ffr[1], ffr[2] - self.spawn_width, ffr[3])
+        self.factory1 = Factory(1, self.on_put_unit, frect)
 
     def draw_mouse_pos(self):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
