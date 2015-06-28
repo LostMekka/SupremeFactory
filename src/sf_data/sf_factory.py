@@ -19,6 +19,7 @@ class Factory:
         self.max_unit_count = 10
         self.modules = []
         self.timer = Factory._unit_creation_time
+        self.timer = 0
         w = screen_rect[2] / Factory._module_count_x
         h = screen_rect[3] / Factory._module_count_y
         for y in range(0, Factory._module_count_y):
@@ -31,11 +32,10 @@ class Factory:
                 self.modules.append(sf_data.sf_module.Module((x, y), self.pass_unit_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
-        if module.pos[1] >= Factory._module_count_x - 1:
-            unit.team = self.team
+        if module.pos[0] >= Factory._module_count_x - 1:
             self.put_unit_callback(unit)
             return True
-        next = self.get_adjacent_module(pos, dir)
+        next = self.get_adjacent_module(module.pos, dir)
         if not next or not next.is_idle():
             return False
         next.receive_unit(unit, dir)
@@ -46,7 +46,9 @@ class Factory:
     
     def get_adjacent_module(self, pos, dir):
         newpos = get_adjacent_pos(pos, dir)
-        if newpos[0] < 0 or pos[1] < 0 or pos[1] >= Factory.module_count_y:
+        if newpos[0] < 0 or newpos[1] < 0 or \
+                newpos[0] >= Factory._module_count_x or \
+                newpos[1] >= Factory._module_count_y:
             return None
         return self.get_module(newpos)
     
@@ -76,7 +78,7 @@ class Factory:
             inmod = self.get_module(Factory._unit_creation_pos)
             if inmod.is_idle():
                 self.timer += Factory._unit_creation_time
-                unit = create_larva()
+                unit = sf_data.sf_unit.create_larva(self.team)
                 inmod.receive_unit(unit, 0)
     
     def draw(self, surface):

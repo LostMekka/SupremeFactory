@@ -29,7 +29,7 @@ class Module:
     build_costs = [0, 10, 100, 100, 100]
     actions = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range]
     max_level = [1, 10, 10, 10, 10]
-    input_time = 800
+    input_time = 0.8
     text_color = (220, 220, 250)
 
     @staticmethod
@@ -53,6 +53,7 @@ class Module:
         self.work_timer_max = 1
         self.input_dir = 0
         self.level = 1
+        self.group = pygame.sprite.Group()
         if not Module.text_surfaces:
             Module.text_surfaces = []
             fontname    = config.app.choose_fontname()
@@ -90,7 +91,7 @@ class Module:
         return not self.is_passive() and self.input_timer > 0
 
     def is_working(self):
-        return self.is_passive() or self.work_timer > 0
+        return self.is_passive() or (self.work_timer > 0 and self.input_timer <= 0)
 
     def is_building(self):
         return self.build_timer > 0
@@ -128,6 +129,7 @@ class Module:
     def receive_unit(self, unit, dir):
         if not self.can_receive_unit():
             return False
+        self.group.add(unit)
         self.unit = unit
         self.input_dir = dir
         self.input_timer = Module.input_time
@@ -168,8 +170,9 @@ class Module:
         if not self.unit:
             return
         self.unit.update(time)
+        self.unit.rect.center = self.get_unit_screen_pos()
         if self.input_timer > 0:
-            if time > input_timer:
+            if time > self.input_timer:
                 time -= self.input_timer
                 self.input_timer = 0
             else:
@@ -179,8 +182,9 @@ class Module:
         if self.work_timer <= 0:
             self.work_timer = 0
             self._next_dir()
-            if pass_unit_callback(self, unit, self._curr_dir):
-                unit = None
+            if self.pass_unit_callback(self, self.unit, self._curr_dir):
+                self.group.remove(self.unit)
+                self.unit = None
 
     def _next_dir(self):
         for x in range(1, 4):
@@ -189,16 +193,28 @@ class Module:
                 self._curr_dir = dir
                 return
     
+    def get_unit_screen_pos(self):
+        if not self.unit:
+            return None
+        mid = self.screen_mid_point
+        if not self.is_waiting():
+            return mid
+        dir = get_adjacent_pos((0, 0), self.input_dir)
+        r = self.screen_rect
+        p = 1 - self.get_input_progress()
+        return (mid[0] - dir[0] * p * r[2], mid[1] - dir[1] * p * r[3])
+    
     def draw(self, surface):
         r = self.screen_rect
         t = Module.text_surfaces[self.type]
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
         surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
                         (r[1] + r[3] / 4) - t.get_height() / 2))
+        self.group.draw(surface)
         if self.is_passive():
             return
         progress = -1
-        col = (70, 70, 255)
+        col = (100, 100, 255)
         if self.is_working():
             progress = self.get_work_progress()
         if self.is_building():
