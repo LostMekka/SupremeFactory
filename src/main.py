@@ -317,11 +317,13 @@ class DroppingUnits:
         unit.drop = Duct(x = x, y = y, tx = tx, ty = ty, t = 0)
     
     def update(self, dt):
+        import images
         for unit in self.units.sprites():
             unit.update_while_dropping(dt)
             self.update_rect(dt, unit)
             if self.is_dropped(unit):
                 unit.kill()
+                unit.anim = images.blubb_anim()
                 self.battlefield.add_unit(unit)
     
     def update_rect(self, dt, unit):
