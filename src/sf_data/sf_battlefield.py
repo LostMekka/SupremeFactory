@@ -52,7 +52,7 @@ class Battlefield:
             self.first_unit_1 = None
         if unit is self.first_unit_2:
             self.first_unit_2 = None
-            unit.kill()
+        unit.kill()
     
     def update(self, dt):
         max1 = -100
