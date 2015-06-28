@@ -2,6 +2,7 @@ from utils import *
 import sf_data.sf_factory
 import config
 import pygame
+import images
 
 class Module:
     type_empty = 0
@@ -53,7 +54,20 @@ class Module:
         self.work_timer_max = 1
         self.input_dir = 0
         self.level = 1
-        self.group = pygame.sprite.Group()
+        self.unit_group = pygame.sprite.Group()
+        self.arrow_group = pygame.sprite.Group()
+        asurf = images.load_arrows()
+        self.arrows = []
+        for dir in range(0, 4):
+            arrow = pygame.sprite.Sprite()
+            arrow.image = asurf[dir]
+            arrow.rect = arrow.image.get_rect()
+            self.arrows.append(arrow)
+        self.arrows[0].rect.center = (screen_rect[0]+screen_rect[2], screen_rect[1] + 0.75*screen_rect[3])
+        self.arrows[1].rect.center = (screen_rect[0]+0.75*screen_rect[2], screen_rect[1])
+        self.arrows[2].rect.center = (screen_rect[0], screen_rect[1] + 0.25*screen_rect[3])
+        self.arrows[3].rect.center = (screen_rect[0]+0.25*screen_rect[2], screen_rect[1] + screen_rect[3])
+        self.arrow_group.add(self.arrows[0])
         if not Module.text_surfaces:
             Module.text_surfaces = []
             fontname    = config.app.choose_fontname()
@@ -73,9 +87,11 @@ class Module:
         if self._dirs[dir]:
             self._dir_count -= 1
             self._dirs[dir] = False
+            self.arrow_group.remove(self.arrows[dir])
         else:
             self._dir_count += 1
             self._dirs[dir] = True
+            self.arrow_group.add(self.arrows[dir])
 
     def uses_target_dir(self, dir):
         return self._dirs[dir]
@@ -129,7 +145,7 @@ class Module:
     def receive_unit(self, unit, dir):
         if not self.can_receive_unit():
             return False
-        self.group.add(unit)
+        self.unit_group.add(unit)
         self.unit = unit
         self.input_dir = dir
         self.input_timer = Module.input_time
@@ -183,7 +199,7 @@ class Module:
             self.work_timer = 0
             self._next_dir()
             if self.pass_unit_callback(self, self.unit, self._curr_dir):
-                self.group.remove(self.unit)
+                self.unit_group.remove(self.unit)
                 self.unit = None
 
     def _next_dir(self):
@@ -210,7 +226,8 @@ class Module:
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
         surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
                         (r[1] + r[3] / 4) - t.get_height() / 2))
-        self.group.draw(surface)
+        self.arrow_group.draw(surface)
+        self.unit_group.draw(surface)
         if self.is_passive():
             return
         progress = -1
