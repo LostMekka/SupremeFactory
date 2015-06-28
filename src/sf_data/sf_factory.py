@@ -10,7 +10,7 @@ class Factory:
     _unit_creation_time = 3
     _unit_creation_pos = (0, _module_count_y - 1)
     
-    def __init__(self, team, put_unit_callback, screen_rect):
+    def __init__(self, team, put_unit_callback, module_change_callback, screen_rect):
         self.team = team
         self.put_unit_callback = put_unit_callback
         self.screen_rect = screen_rect
@@ -29,7 +29,8 @@ class Factory:
                 rx2 = math.floor(screen_rect[0] + (x + 1) * w)
                 ry2 = math.floor(screen_rect[1] + (y + 1) * h)
                 r = (rx1, ry1, rx2-rx1, ry2-ry1)
-                self.modules.append(sf_data.sf_module.Module((x, y), self.pass_unit_callback, r))
+                self.modules.append(sf_data.sf_module.Module((x, y), 
+                        self.pass_unit_callback,  module_change_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
         if module.pos[0] >= Factory._module_count_x - 1 and dir == 0:
