@@ -13,8 +13,8 @@ class Battlefield:
         self.units_group    = Group()
         self.projectile_group = Group()
         self.size = 200
-        self.fist_unit_1 = None
-        self.fist_unit_2 = None
+        self.first_unit_1 = None
+        self.first_unit_2 = None
         self.unit_count_1 = 0
         self.unit_count_2 = 0
         self.draw_offset = 0
@@ -46,15 +46,16 @@ class Battlefield:
     
     def on_kill(self, unit):
         if unit is self.fist_unit_1:
-            self.fist_unit_1 = None
+            self.first_unit_1 = None
         if unit is self.fist_unit_2:
-            self.fist_unit_2 = None
+            self.first_unit_2 = None
+            unit.kill()
     
     def update(self, dt):
         max1 = -100
         max2 = self.size + 100
-        self.fist_unit_1 = None
-        self.fist_unit_2 = None
+        self.first_unit_1 = None
+        self.first_unit_2 = None
         self.unit_count_1 = 0
         self.unit_count_2 = 0
         for unit in self.units_group.sprites():
@@ -62,12 +63,12 @@ class Battlefield:
                 self.unit_count_1 += 1
                 if unit.move.pos > max1:
                     max1 = unit.move.pos
-                    self.fist_unit_1 = unit
+                    self.first_unit_1 = unit
             if unit.team == 2:
                 self.unit_count_2 += 1
                 if unit.move.pos < max2:
                     max2 = unit.move.pos
-                    self.fist_unit_2 = unit
+                    self.first_unit_2 = unit
             unit.update_on_battlefield(dt)
         self.projectile_group.update(dt)
 
