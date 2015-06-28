@@ -1,13 +1,14 @@
 from utils import *
 from pygame.sprite import *
 from sf_data.sf_unit import *
+from pygame import Rect
 
 
 
 class Battlefield:
 
     def __init__(self, rect):
-        self.rect           = rect
+        self.rect           = Rect(rect)
         self.units_group    = Group()
         self.projectile_group = Group()
 
@@ -17,10 +18,9 @@ class Battlefield:
             self.units_group.add(unit)
 
     def create_elefant(self, team):
-        start_pos   = 0 if team == 1 else 1000
-        start_dir   = 1 if team == 1 else -1
         unit        = Unit(
             bf          = self,
+            team        = team,
             anim        = Anim(elefant_surfaces),
             move        = UnitMove((8, 12)),
             fight       = UnitFight((5,8), range))
@@ -33,6 +33,13 @@ class Battlefield:
     def draw(self, surface):
         self.units_group.draw(surface)
         self.projectile_group.draw(surface)
+
+    def floor_y(self):
+        return self.rect.y + self.rect.h * 0.9
+    
+    def team_start_x(self, team):
+        pos = 0 if team == 1 else 1000
+        return self.rect.x + pos
 
 
 '''
