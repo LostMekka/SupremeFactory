@@ -37,9 +37,10 @@ class Module:
     def get_build_cost(type):
         return build_costs[type]
 
-    def __init__(self, pos, pass_unit_callback, screen_rect):
+    def __init__(self, pos, pass_unit_callback, change_callback, screen_rect):
         self.pos = pos
         self.pass_unit_callback = pass_unit_callback
+        self.change_callback = change_callback
         self.screen_rect = screen_rect
         self.screen_mid_point = get_rect_middle(self.screen_rect)
         self._dirs = [True, False, False, False]
@@ -151,6 +152,7 @@ class Module:
         self.input_timer = Module.input_time
         self.work_timer_max = Module.work_times[self.type]
         self.work_timer = self.work_timer_max
+        self.change_callback(self)
         return True
 
     def build_new(self, type):
@@ -160,6 +162,8 @@ class Module:
         self.build_timer = self.build_timer_max
         self.type = type
         self.level = 1
+        self.change_callback(self)
+        return True
 
     def upgrade(self, type):
         if not self.can_upgrade():
@@ -168,6 +172,8 @@ class Module:
         self.build_timer = self.build_timer_max
         self.type = type
         self.level += 1
+        self.change_callback(self)
+        return True
 
     def sell(self):
         if not self.can_sell():
@@ -176,11 +182,15 @@ class Module:
         self.build_timer = self.build_timer_max
         self.type = Module.type_empty
         self.level = 1
+        self.change_callback(self)
+        return True
 
     def update(self, time):
         # building the module has priority
         if self.build_timer > 0:
             self.build_timer = max(0, self.build_timer - time)
+            if self.build_timer == 0:
+                self.change_callback(self)
             return
         # when not building: if we have no unit to work on, do nothing
         if not self.unit:
@@ -188,9 +198,10 @@ class Module:
         self.unit.update(time)
         self.unit.rect.center = self.get_unit_screen_pos()
         if self.input_timer > 0:
-            if time > self.input_timer:
+            if time >= self.input_timer:
                 time -= self.input_timer
                 self.input_timer = 0
+                self.change_callback(self)
             else:
                 self.input_timer -= time
                 return
@@ -201,6 +212,7 @@ class Module:
             if self.pass_unit_callback(self, self.unit, self._curr_dir):
                 self.unit_group.remove(self.unit)
                 self.unit = None
+                self.change_callback(self)
 
     def _next_dir(self):
         for x in range(1, 4):
