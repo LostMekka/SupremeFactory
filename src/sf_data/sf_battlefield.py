@@ -34,7 +34,7 @@ class Battlefield:
         unit        = Unit(
             bf          = self,
             team        = team,
-            anim        = elefant_anim(),
+            anim        = blubb_anim(),
             move        = UnitMove(start_pos, speed = (8, 12)),
             fight       = UnitFight((5,8), range = 5))
         return unit
