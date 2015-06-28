@@ -83,5 +83,5 @@ class Battlefield:
 
     def set_window_center(self, c):
         w = self.rect.w / self.draw_scale
-        off = min(self.size - w, max(0, c - w / 2))
+        self.draw_offset = min(self.size - w, max(0, c - w / 2))
 
