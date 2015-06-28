@@ -1,5 +1,6 @@
 from utils import *
 import random as R
+import config
 import pygame
 from pygame.sprite import *
 from images import *
@@ -86,8 +87,10 @@ class Unit(Sprite):
         self.fight.update(dt, self)
         self.move.update(dt, self)
         self.image  = self.anim.image()
-        self.rect.x = self.move.pos + self.bf.rect.x
-        self.rect.y = self.bf.floor_y() - self.rect.h
+        self.rect.center = (
+            self.bf.rect.x + (self.move.pos - self.bf.draw_offset) * self.bf.draw_scale,
+            self.bf.rect.bottom - config.app.floor_height - self.rect.h / 2 + 10
+        )
     
     def add_speed(self, v):
         self.move.speed += v
