@@ -42,6 +42,7 @@ class App(Duct):
 
     def update_everything(self):
         dt  = 0.016 # TODO
+        self.factory1.update(dt)
         self.battlefield.update(dt)
 
     def draw_everything(self):
@@ -222,13 +223,16 @@ class App(Duct):
         self.drag_start = None
     
     def on_build_press(self, type):
-        print("build ", type, " pressed!")
+        if self.selected_module:
+            self.selected_module.build_new(type)
     
     def on_upgrade_press(self, object):
-        print("upgrade pressed!")
+        if self.selected_module:
+            self.selected_module.upgrade()
         
     def on_sell_press(self, object):
-        print("sell pressed!")
+        if self.selected_module:
+            self.selected_module.sell()
     
     def on_put_unit(self, unit):
         # TODO: insert unit
