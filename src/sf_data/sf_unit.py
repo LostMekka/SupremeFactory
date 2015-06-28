@@ -5,20 +5,6 @@ from pygame.sprite import *
 
 
 
-def unit_stuff():
-    anim_paths  = ["./assets/friend"+str(i)+".png" for i in range(1,4)]
-    anim_surfs  = [pygame.image.load(path) for path in anim_paths]
-    unit_group       = Group()
-    for i in range(10):
-        sprite          = Unit(
-            anim    = Anim(anim_surfs),
-            move    = UnitMove((8, 12)),
-            fight   = UnitFight((5,8), range))
-        unit_group.add(sprite)
-    return unit_group
-
-
-
 def elefant_surfaces():
     anim_paths  = ["./assets/friend"+str(i)+".png" for i in range(1,4)]
     anim_surfs  = [pygame.image.load(path) for path in anim_paths]
@@ -26,17 +12,19 @@ def elefant_surfaces():
 
 elefant_surfaces = elefant_surfaces()
 
+larva_surfaces = elefant_surfaces
+
+def create_larva(team):
+    return Unit(
+        bf      = None,
+        anim    = Anim(larva_surfaces),
+        move    = UnitMove(pos = 0, speed = 8),
+        fight   = UnitFight(damaga = 1, range = 0),
+        team    = team,
+        in_factory = True)
 
 
-def create_larva():
-    return create_elefant()
 
-
-def create_elefant():
-    sprite          = Unit(
-        anim    = Anim(elefant_surfaces),
-        move    = UnitMove(5))
-    return sprite
 
 
 class Anim:
@@ -101,24 +89,41 @@ class UnitFight:
             else:
                 pass # TODO Nahkampf
             self.__time = self.__time - self.delay
-            
+
+
 
 
 class Unit(Sprite):
 
-    def __init__(self, anim, move, fight, bf, team):
+    # 
+    # access .rect if you want to draw when .in_factory == True
+    #
+
+    def __init__(self, bf, anim, move, fight, team, in_factory = False):
         super(Unit, self).__init__()
+        self.in_factory = in_factory
         self.bf     = bf
         self.anim   = anim
         self.move   = move
         self.fight  = fight
         self.team   = team
+        self.image  = self.anim.image()
         if team == 2:
             self.anim.flip()
-        self.image  = self.anim.image()
         self.rect   = self.image.get_rect()
 
     def update(self, dt):
+        if self.in_factory:
+            self.update_in_factory(dt)
+        else:
+            self.update_on_battlefield(dt)
+
+    def update_in_factory(self, dt):
+        self.anim.update(dt)
+        self.image  = self.anim.image()
+        self.rect.size = self.image.get_rect().size
+    
+    def update_on_battlefield(self, dt):
         self.anim.update(dt)
         self.fight.update(dt, self)
         self.move.update(dt, self)
