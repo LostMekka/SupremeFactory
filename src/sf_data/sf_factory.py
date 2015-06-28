@@ -84,5 +84,7 @@ class Factory:
     def draw(self, surface):
         pygame.draw.rect(surface, (35, 35, 40), self.screen_rect, 0)
         for m in self.modules:
+            m.draw_non_sprites(surface)
+        for m in self.modules:
             m.draw(surface)
     

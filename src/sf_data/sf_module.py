@@ -221,13 +221,15 @@ class Module:
         return (mid[0] - dir[0] * p * r[2], mid[1] - dir[1] * p * r[3])
     
     def draw(self, surface):
+        self.arrow_group.draw(surface)
+        self.unit_group.draw(surface)
+    
+    def draw_non_sprites(self, surface):
         r = self.screen_rect
         t = Module.text_surfaces[self.type]
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
         surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
                         (r[1] + r[3] / 4) - t.get_height() / 2))
-        self.arrow_group.draw(surface)
-        self.unit_group.draw(surface)
         if self.is_passive():
             return
         progress = -1
