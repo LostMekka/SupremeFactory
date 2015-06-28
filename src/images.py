@@ -1,6 +1,10 @@
 import pygame
 from pygame.transform import *
 
+#
+# call arrows() and get a tuple with the for arrows right, up, left, down
+#
+
 def load_arrow():
     path    = "./assets/arrow_top.png"
     return pygame.image.load(path)
