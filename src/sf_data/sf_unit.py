@@ -89,18 +89,15 @@ class Unit(DirtySprite):
         if team == 2:
             self.anim.flip()
         self.rect   = self.image.get_rect()
-        #self.source_rect = self.image.get_rect()
 
     def update_in_factory(self, dt):
         self.anim.update(dt)
         self.image  = self.anim.image()
-        #self.source_rect = self.image.get_rect()
         self.rect.size = self.image.get_rect().size
     
     def update_while_dropping(self, dt):
         self.anim.update(dt)
         self.image  = self.anim.image()
-        #self.source_rect = self.image.get_rect()
         self.rect.size = self.image.get_rect().size
     
     def update_on_battlefield(self, dt):
@@ -109,7 +106,6 @@ class Unit(DirtySprite):
         if not self.fight.stand:
             self.move.update(dt, self)
         self.image  = self.anim.image()
-        #self.source_rect = self.image.get_rect()
         self.rect.center = (
             self.bf.rect.x + (self.move.pos - self.bf.draw_offset) * self.bf.draw_scale,
             self.bf.rect.bottom - config.app.floor_height - self.rect.h / 2 + 10
