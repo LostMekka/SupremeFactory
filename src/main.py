@@ -202,7 +202,8 @@ def main():
     app.size = (1000, 700)
     app.setup_ui()
     app.new_game()
-    app.display_surface = pygame.display.set_mode(app.size)
+    flags       = pygame.DOUBLEBUF | pygame.HWSURFACE
+    app.display_surface = pygame.display.set_mode(app.size, flags)
     pygame.display.set_caption('SupremeFactory!')
     app.run_main_loop()
 
