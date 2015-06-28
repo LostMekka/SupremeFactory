@@ -165,12 +165,11 @@ class Module:
         self.change_callback(self)
         return True
 
-    def upgrade(self, type):
+    def upgrade(self):
         if not self.can_upgrade():
             return False
-        self.build_timer_max = Module.build_times[type]
+        self.build_timer_max = Module.build_times[self.type]
         self.build_timer = self.build_timer_max
-        self.type = type
         self.level += 1
         self.change_callback(self)
         return True
