@@ -9,36 +9,11 @@ from images import *
 def create_larva(team):
     return Unit(
         bf      = None,
-        anim    = Anim(load_larva_surfaces()),
+        anim    = larva_anim(),
         move    = UnitMove(pos = 0, speed = 8),
         fight   = UnitFight(damage = 1, range = 0),
         team    = team,
         in_factory = True)
-
-
-
-
-
-class Anim:
-
-    def __init__(self, surfs):
-        self.surfs  = surfs
-        self.index  = 0
-        self.delay  = 0.9
-        self.__time = 0
-
-    def update(self, dt):
-        self.__time = self.__time + dt
-        while self.__time > self.delay:
-            self.index = (self.index + 1) % len(self.surfs)
-            self.__time = self.__time - self.delay
-
-    def image(self):
-        return self.surfs[self.index % len(self.surfs)]
-    
-    def flip(self):
-        from pygame.transform import flip
-        self.surfs = [flip(surf, True, False) for surf in self.surfs]
 
 
 

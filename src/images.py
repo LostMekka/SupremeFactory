@@ -23,23 +23,59 @@ def load_arrow():
 def load_arrows():
     image = load_arrow()
     arrows  = (
-        rotate(image, 270),
-        image,
-        rotate(image, 90),
-        rotate(image, 180))
+        rotate(image, 270), # right
+        image,              # up
+        rotate(image, 90),  # left
+        rotate(image, 180)) # down
     return arrows
 
 @cached
 def load_elefant_surfaces():
-    anim_paths  = ["./assets/friend"+str(i)+".png" for i in range(1,4)]
-    anim_surfs  = [pygame.image.load(path) for path in anim_paths]
-    return anim_surfs
+    paths  = ["./assets/friend"+str(i)+".png" for i in range(1,4)]
+    surfs  = [pygame.image.load(path) for path in paths]
+    return surfs
 
 @cached
 def load_larva_surfaces():
-    anim_paths  = ["./assets/larva"+str(i)+".png" for i in range(1,4)]
-    anim_surfs  = [pygame.image.load(path) for path in anim_paths]
-    return anim_surfs
+    paths  = ["./assets/larva"+str(i)+".png" for i in range(1,4)]
+    surfs  = [pygame.image.load(path) for path in paths]
+    surfs.append(surfs[1])
+    return surfs
+
+
+
+class Anim:
+
+    def __init__(self, surfs, delay):
+        self.surfs  = surfs
+        self.index  = 0
+        self.delay  = 0.2
+        self.__time = 0
+
+    def update(self, dt):
+        self.__time = self.__time + dt
+        while self.__time > self.delay:
+            self.index = (self.index + 1) % len(self.surfs)
+            self.__time = self.__time - self.delay
+
+    def image(self):
+        return self.surfs[self.index % len(self.surfs)]
+    
+    def flip(self):
+        from pygame.transform import flip
+        self.surfs = [flip(surf, True, False) for surf in self.surfs]
+
+def larva_anim():
+    return Anim(
+        surfs   = load_larva_surfaces(),
+        delay   = 0.2)
+
+def elefant_anim():
+    return Anim(
+        surfs   = load_elefant_surfaces(),
+        delay   = 0.8)
+
+
 
 if __name__ == "__main__":
     load_arrows()
