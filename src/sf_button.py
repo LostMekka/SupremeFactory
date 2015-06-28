@@ -1,5 +1,6 @@
 import pygame
 from utils import *
+import config
 
 class SFButton:
     def __init__(self, rect, color, text, text_color, callback, callback_object):
@@ -36,7 +37,8 @@ class SFButton:
         """
         pygame.draw.rect(surface, self.color, self.rect, 0)
         pygame.draw.rect(surface, (190, 190, 190), self.rect, 1)
-        font = pygame.font.SysFont(None, font_size)
+        fontname    = config.app.choose_fontname()
+        font        = pygame.font.SysFont(fontname, font_size)
         this_text = font.render(self.text, 1, self.text_color)
         surface.blit(this_text, ((self.rect[0] + self.rect[2] / 2) - this_text.get_width() / 2,
                                  (self.rect[1] + self.rect[3] / 2) - this_text.get_height() / 2))
