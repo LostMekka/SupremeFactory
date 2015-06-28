@@ -92,6 +92,13 @@ class Unit(DirtySprite):
         # TODO hack, so no phantom larva is on the top left of the window
         self.rect.topleft = (-1000, -1000)
 
+    def set_anim(self, anim):
+        if self.anim is anim:
+            return
+        self.anim = anim
+        if self.team == 2:
+            self.anim.flip()
+
     def update_in_factory(self, dt):
         self.anim.update(dt)
         self.image  = self.anim.image()

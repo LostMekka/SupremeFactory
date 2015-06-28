@@ -301,9 +301,14 @@ class App(Duct):
             self.selected_module.sell()
     
     def on_put_unit(self, unit):
+        import images
         # TODO: insert unit
         unit.kill()
-        self.dropping_units.add_unit(unit)
+        if unit.team == 1:
+            self.dropping_units.add_unit(unit)
+        else:
+            self.battlefield.add_unit(unit)
+            unit.set_anim(images.blubb_anim())
 
 
 
