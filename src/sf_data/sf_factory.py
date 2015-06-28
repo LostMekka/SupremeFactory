@@ -1,6 +1,7 @@
 from utils import *
 import sf_data.sf_module
 import pygame
+import math
 
 class Factory:
     
@@ -20,9 +21,13 @@ class Factory:
         self.timer = Factory._unit_creation_time
         w = screen_rect[2] / Factory._module_count_x
         h = screen_rect[3] / Factory._module_count_y
-        for y in range(0, Factory._module_count_y-1):
-            for x in range(0, Factory._module_count_x-1):
-                r = (x*w, y*h, w, h)
+        for y in range(0, Factory._module_count_y):
+            for x in range(0, Factory._module_count_x):
+                rx1 = math.floor(screen_rect[0] + x * w)
+                ry1 = math.floor(screen_rect[1] + y * h)
+                rx2 = math.floor(screen_rect[0] + (x + 1) * w)
+                ry2 = math.floor(screen_rect[1] + (y + 1) * h)
+                r = (rx1, ry1, rx2-rx1, ry2-ry1)
                 self.modules.append(sf_data.sf_module.Module((x, y), self.pass_unit_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
