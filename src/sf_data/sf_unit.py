@@ -40,20 +40,30 @@ class UnitFight:
         self.damage = damage
         self.delay  = 4
         self.__time = 0
-        
+        self.stand = False
+    
     def update(self, dt, unit):
-        self.__time = self.__time + dt
-        while self.__time > self.delay:
-            if self.range != 0:
+        self.__time = max(0, self.__time - dt)
+        target = unit.bf.first_unit_2 if unit.team == 1 else unit.bf.first_unit_1
+        d = abs(unit.move.pos - target.move.pos) if target else (
+                unit.bf.size-unit.move.pos if unit.team == 1 else unit.move.pos)
+        mr = 1
+        stand_melee = self.range == 0 and d <= mr
+        stand_ranged = self.range > 0 and (self.range > d or self.__time > 0)
+        self.stand = stand_melee or stand_ranged
+        if self.__time == 0 and target:
+            if stand_ranged:
                 projectile = Projectile(
                     team        = unit.team,
                     damage      = self.damage,
-                    start_xy    = unit.rect.center,
-                    start_pos   = unit.move.pos)
+                    start_pos   = unit.move.pos,
+                    target      = target,
+                    battlefield = unit.bf)
                 unit.bf.projectile_group.add(projectile)
-            else:
-                pass # TODO Nahkampf
-            self.__time = self.__time - self.delay
+                self.__time = self.delay
+            elif stand_ranged:
+                target.damage(self.damage)
+                self.__time = self.delay
 
 
 
@@ -67,6 +77,7 @@ class Unit(Sprite):
     def __init__(self, bf, anim, move, fight, team, in_factory = False):
         super(Unit, self).__init__()
         self.in_factory = in_factory
+        self.hp     = 10
         self.bf     = bf
         self.anim   = anim
         self.move   = move
@@ -91,7 +102,8 @@ class Unit(Sprite):
     def update_on_battlefield(self, dt):
         self.anim.update(dt)
         self.fight.update(dt, self)
-        self.move.update(dt, self)
+        if not self.fight.stand:
+            self.move.update(dt, self)
         self.image  = self.anim.image()
         self.rect.center = (
             self.bf.rect.x + (self.move.pos - self.bf.draw_offset) * self.bf.draw_scale,
@@ -100,6 +112,11 @@ class Unit(Sprite):
         
     def center(self):
         return self.rect.center
+    
+    def damage(self, damage):
+        self.hp -= damage
+        if self.hp <= 0:
+            self.bf.on_kill(self)
     
     def add_speed(self, v):
         self.move.speed += v
@@ -119,12 +136,14 @@ class Unit(Sprite):
 
 class Projectile(Sprite):
 
-    def __init__(self, damage, start_xy, start_pos, team):
+    def __init__(self, damage, start_pos, target, team, battlefield):
         super(Projectile, self).__init__()
+        self.bf         = battlefield
         self.damage     = damage
         self.team       = team
-        self.xy         = start_xy
         self.pos        = start_pos
+        self.start_pos  = start_pos
+        self.target     = target
         self.image      = projectile_image()
         if team == 2:
             self.image      = pygame.transform.flip(self.image, True, False)
@@ -132,9 +151,18 @@ class Projectile(Sprite):
 
     def update(self, dt):
         direction       = 1 if self.team == 1 else -1
-        x, y            = self.xy
-        self.xy         = (x + 180 * dt * direction, y)
-        self.rect.topleft = self.xy
+        move = 4 * dt
+        s = self.pos - self.target.move.pos
+        d = self.start_pos - self.target.move.pos
+        h = (-s * s / d + s) * direction
+        if s * d <= 0:
+            self.target.damage(self.damage)
+            self.kill()
+        self.pos += move * direction
+        self.rect.center = (
+            self.bf.rect.x + (self.pos - self.bf.draw_offset) * self.bf.draw_scale,
+            self.bf.rect.bottom - config.app.floor_height + h*self.bf.draw_scale - 30
+        )
 
 
 

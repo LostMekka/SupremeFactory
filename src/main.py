@@ -39,6 +39,8 @@ class App(Duct):
     def __init__(self):
         self.drag_start = None
         self.selected_module = None
+        self.mouse_down = False
+        self.dragging_minimap = False
 
     def update_everything(self):
         dt  = 0.016 # TODO
@@ -77,6 +79,8 @@ class App(Duct):
                     self.on_mouse_down(pygame.mouse.get_pos())
                 if event.type == MOUSEBUTTONUP and event.button == 1:
                     self.on_mouse_up(pygame.mouse.get_pos())
+                if event.type == MOUSEMOTION and self.mouse_down:
+                    self.on_mouse_drag(pygame.mouse.get_pos())
 
                 if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                     pygame.quit()
@@ -107,6 +111,7 @@ class App(Duct):
         mfh = flh * mh / (h-mh-ih)
         self.frames = Duct()
         self.minimap_height = mh
+        self.minimap_border = 4
         self.factory_width = fw
         self.battlefield_width = bw
         self.info_height = ih
@@ -166,11 +171,20 @@ class App(Duct):
         self.dropping_units     = DroppingUnits(
             battlefield     = self.battlefield)
 
+    def draw_minimap_rect(self, surface):
+        b = self.minimap_border
+        sw = self.size[0] - 2 * b
+        x = self.battlefield.get_offset_percentage() * sw + b
+        w = self.battlefield.get_width_percentage() * sw
+        r = (x, b, w, self.minimap_height - 2 * b)
+        pygame.draw.rect(surface, (200, 200, 220), r, 1)
+
     def draw_ui(self):
         surface = self.display_surface
         a = pygame.time.get_ticks()
         for frame in self.frames.values():
             frame.draw(surface)
+        self.draw_minimap_rect(surface)
         b = pygame.time.get_ticks()
         self.buttons_group.draw(surface)
         c = pygame.time.get_ticks()
@@ -209,7 +223,17 @@ class App(Duct):
         if self.selected_module:
             self.selected_module.toggle_target_dir(dir)
 
+    def on_minimap_touch(self, x):
+        b = self.minimap_border
+        x = (x - b) / (self.size[0] - 2 * b) * self.battlefield.size
+        self.battlefield.set_window_center(x)
+
+    def on_mouse_drag(self, pos):
+        if self.dragging_minimap:
+            self.on_minimap_touch(pos[0])
+
     def on_mouse_down(self, pos):
+        self.mouse_down = True
         # hit a module? if yes, select it and start drag
         module = None
         for m in self.factory1.modules:
@@ -230,11 +254,18 @@ class App(Duct):
         if button:
             button.press()
             return
+        # clicked on minimap?
+        if is_point_in_rect(pos, self.frames.minimap_frame.outer.rect):
+            self.dragging_minimap = True
+            self.on_minimap_touch(pos[0])
+            return
         # nothing to press? deselect
         self.selected_module = None
         self.update_buttons
 
     def on_mouse_up(self, pos):
+        self.mouse_down = False
+        self.dragging_minimap = False
         if self.drag_start and self.selected_module:
             dx = pos[0] - self.drag_start[0]
             dy = pos[1] - self.drag_start[1]
