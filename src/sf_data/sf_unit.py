@@ -76,12 +76,6 @@ class Unit(Sprite):
             self.anim.flip()
         self.rect   = self.image.get_rect()
 
-    def update(self, dt):
-        if self.in_factory:
-            self.update_in_factory(dt)
-        else:
-            self.update_on_battlefield(dt)
-
     def update_in_factory(self, dt):
         self.anim.update(dt)
         self.image  = self.anim.image()

@@ -195,7 +195,7 @@ class Module:
         # when not building: if we have no unit to work on, do nothing
         if not self.unit:
             return
-        self.unit.update(time)
+        self.unit.update_in_factory(time)
         self.unit.rect.center = self.get_unit_screen_pos()
         if self.input_timer > 0:
             if time >= self.input_timer:

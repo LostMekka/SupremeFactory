@@ -8,10 +8,18 @@ from images import *
 
 class Battlefield:
 
+    scale = 60
+
     def __init__(self, rect):
         self.rect           = Rect(rect)
         self.units_group    = Group()
         self.projectile_group = Group()
+        self.size = 1000
+        self.fist_unit_1 = None
+        self.fist_unit_2 = None
+        self.unit_count_1 = 0
+        self.unit_count_2 = 0
+        self.draw_offset = 0
 
     def create_some_units(self):
         for i in range(1):
@@ -31,8 +39,39 @@ class Battlefield:
             fight       = UnitFight((5,8), range = 5))
         return unit
 
+    def add_unit(self, unit):
+        self.units.append(unit)
+        if unit.team == 1:
+            unit.move.pos = 0
+        if unit.team == 2:
+            unit.move.pos = self.size
+        self.units_group.add(unit)
+    
+    def on_kill(self, unit):
+        if unit is self.fist_unit_1:
+            self.fist_unit_1 = None
+        if unit is self.fist_unit_2:
+            self.fist_unit_2 = None
+    
     def update(self, dt):
-        self.units_group.update(dt)
+        max1 = -100
+        max2 = self.size + 100
+        self.fist_unit_1 = None
+        self.fist_unit_2 = None
+        self.unit_count_1 = 0
+        self.unit_count_2 = 0
+        for unit in self.units_group.sprites():
+            if unit.team == 1:
+                self.unit_count_1 += 1
+                if unit.move.pos > max1:
+                    max1 = unit.move.pos
+                    self.fist_unit_1 = unit
+            if unit.team == 2:
+                self.unit_count_2 += 1
+                if unit.move.pos < max2:
+                    max2 = unit.move.pos
+                    self.fist_unit_2 = unit
+            unit.update_on_battlefield(dt)
         self.projectile_group.update(dt)
 
     def draw(self, surface):
@@ -47,51 +86,3 @@ class Battlefield:
     
     def team_start_pos(self, team):
         return 0 if team == 1 else 400
-
-
-'''
-First sketch
-
-class BattleField:
-    
-    def __init__(self):
-        self.units = []
-        self.size = 1000
-        self.fist_unit_1 = None
-        self.fist_unit_2 = None
-        self.unit_count_1 = 0
-        self.unit_count_2 = 0
-    
-    def add_unit(self, unit):
-        self.units.append(unit)
-        if unit.team == 1:
-            unit.pos = 0
-        if unit.team == 2:
-            unit.pos = self.size
-    
-    def remove_unit(self, unit):
-        unit.hp = 0
-        
-    
-    def update(self, time):
-        for unit in units:
-            unit.update(time)
-        units[:] = [unit for unit in units if unit.hp <= 0]
-        max1 = -100
-        max2 = self.size + 100
-        self.fist_unit_1 = None
-        self.fist_unit_2 = None
-        self.unit_count_1 = 0
-        self.unit_count_2 = 0
-        for unit in units:
-            if unit.team == 1:
-                self.unit_count_1 += 1
-                if unit.pos > max1:
-                    max1 = unit.pos
-                    self.fist_unit_1 = unit
-            if unit.team == 2:
-                self.unit_count_2 += 1
-                if unit.pos < max2:
-                    max2 = unit.pos
-                    self.fist_unit_2 = unit
-'''
