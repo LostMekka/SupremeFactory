@@ -137,7 +137,9 @@ class Module:
         return self.is_idle() and self.level < Module.max_level[self.type]
 
     def can_sell(self):
-        return self.is_idle() and self.type != Module.type_empty
+        return (
+            (self.is_idle() and self.type != Module.type_empty)
+            or self.is_passive())
 
     def can_receive_unit(self):
         return self.is_idle() and not self.is_passive()
@@ -208,10 +210,13 @@ class Module:
         if self.work_timer <= 0:
             self.work_timer = 0
             self._next_dir()
-            if self.pass_unit_callback(self, self.unit, self._curr_dir):
-                self.unit_group.remove(self.unit)
-                self.unit = None
-                self.change_callback(self)
+            if self._curr_dir != None:
+                pass_success = self.pass_unit_callback(
+                    self, self.unit, self._curr_dir)
+                if pass_success:
+                    self.unit_group.remove(self.unit)
+                    self.unit = None
+                    self.change_callback(self)
 
     def _next_dir(self):
         curr_dir = self._curr_dir or 0

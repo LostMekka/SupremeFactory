@@ -263,7 +263,8 @@ class App(Duct):
     
     def on_put_unit(self, unit):
         # TODO: insert unit
-        pass
+        unit.kill()
+        self.battlefield.add_unit(unit)
 
 def main():
     pygame.init()

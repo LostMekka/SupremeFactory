@@ -42,6 +42,7 @@ class Battlefield:
             unit.move.pos = 0
         if unit.team == 2:
             unit.move.pos = self.size
+        unit.bf = self
         self.units_group.add(unit)
     
     def on_kill(self, unit):
