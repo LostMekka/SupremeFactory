@@ -47,11 +47,17 @@ class App(Duct):
 
     def draw_everything(self):
         surface = self.display_surface
+        a = pygame.time.get_ticks()
         self.draw_ui()
+        b = pygame.time.get_ticks()
         self.factory1.draw(surface)
+        c = pygame.time.get_ticks()
         if self.selected_module:
             pygame.draw.rect(surface, (255, 255, 255), self.selected_module.screen_rect, 1)
+        d = pygame.time.get_ticks()
         self.battlefield.draw(surface)
+        e = pygame.time.get_ticks()
+        #print(b-a, c-b, d-c, e-d)
 
     def run_main_loop(self):
         while True:  # main game loop
@@ -112,17 +118,26 @@ class App(Duct):
         mn = 4
         n = mn + 3
         sh = (ih - n * bh) / (n + 1)
+
         self.build_buttons = []
         self.buttons = Duct()
         def getrekt(i):
             return (fw / 2, h - ih + sh + (i - 1) * (bh + sh), fw / 2 - sh, bh)
         for t in range(1, mn+1):
-            text = "Build: " + Module.names[t]
-            btn = SFButton(getrekt(t), None, text, None, self.on_build_press, t)
-            self.buttons[text] = btn
+            text                = "Build: " + Module.names[t]
+            btn                 = SFButton(
+                getrekt(t), None, text, None, self.on_build_press, t)
+            self.buttons[text]  = btn
             self.build_buttons.append(btn)
-        self.buttons.upgrade = SFButton(getrekt(mn+1.5), None, "Upgrade", None, self.on_upgrade_press, None)
-        self.buttons.sell = SFButton(getrekt(mn+3), None, "Sell", None, self.on_sell_press, None)
+        self.buttons.upgrade    = SFButton(
+            getrekt(mn+1.5), None, "Upgrade", None, self.on_upgrade_press, None)
+        self.buttons.sell       = SFButton(
+            getrekt(mn+3), None, "Sell", None, self.on_sell_press, None)
+
+        self.buttons_group = pygame.sprite.LayeredUpdates()
+        for btn in self.buttons.values():
+            self.buttons_group.add(btn.sprites())
+
         self.select_module(None)
         
         self.labels = []
@@ -149,15 +164,16 @@ class App(Duct):
 
     def draw_ui(self):
         surface = self.display_surface
+        a = pygame.time.get_ticks()
         for frame in self.frames.values():
             frame.draw(surface)
-
-        for button in self.buttons.values():
-            button.draw(surface)
-
+        b = pygame.time.get_ticks()
+        self.buttons_group.draw(surface)
+        c = pygame.time.get_ticks()
         for label in self.labels:
             surface.blit(label, (170, 500))
-
+        d = pygame.time.get_ticks()
+        #print(b-a, c-b, d-c)
         # draw_mouse_pos()
 
     def select_module(self, module):
@@ -242,7 +258,7 @@ def main():
     pygame.init()
     app = App()
     config.app = app
-    app.size = (1000, 700)
+    app.size = (1300, 700)
     app.setup_ui()
     app.new_game()
     flags       = pygame.DOUBLEBUF | pygame.HWSURFACE

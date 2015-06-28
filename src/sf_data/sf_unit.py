@@ -36,10 +36,7 @@ class UnitFight:
     def __init__(self, damage, range):
         import random
         self.range = range
-        if isinstance(damage, tuple):
-            self.damage = random.uniform(*damage)
-        else:
-            self.damage = damage
+        self.damage = damage
         self.delay  = 4
         self.__time = 0
         

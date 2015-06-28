@@ -1,6 +1,10 @@
 import pygame
+from pygame.locals import *
+from pygame.sprite import Sprite, Group
 from utils import *
 import config
+
+
 
 class SFButton:
     def __init__(self, rect, color, text, text_color, callback, callback_object):
@@ -11,38 +15,62 @@ class SFButton:
         self.callback = callback
         self.callback_object = callback_object
         self.active = True
+        
+        self.bg_sprite          = Sprite()
+        self.bg_sprite.rect     = Rect(rect)
+        self.bg_sprite.layer    = 1
+        self.label_sprite       = Sprite()
+        self.label_sprite.rect  = Rect(rect)
+        self.label_sprite.layer = 2
+        
+        self.set_available() # trigger .render
+
+    def sprites(self):
+        return self.bg_sprite, self.label_sprite
 
     def set_available(self):
         self.color = (0, 50, 0)
         self.text_color = (0, 255, 0)
         self.active = True
+        self.render()
 
     def set_unavailable(self):
         self.color = (50, 0, 0)
         self.text_color = (255, 0, 0)
         self.active = False
+        self.render()
 
     def set_deactivated(self):
         self.color = (0, 50, 0)
         self.text_color = (150, 150, 150)
         self.active = False
+        self.render()
 
-    def draw(self, surface, font_size=14):
-        """
-        Draws the button to the given surface.
-        Font size defaults to 14.
-        :param surface:
-        :param font_size:
-        :return:
-        """
-        pygame.draw.rect(surface, self.color, self.rect, 0)
-        pygame.draw.rect(surface, (190, 190, 190), self.rect, 1)
+    def render_bg(self):
+        rect    = Rect(self.rect)
+        rect.topleft = (0, 0)
+        color   = self.color
+        surf    = pygame.Surface(rect.size)
+        pygame.draw.rect(surf, color, rect, 0)
+        pygame.draw.rect(surf, (190, 190, 190), rect, 1)
+        self.bg_sprite.image = surf
+        self.bg_sprite.rect  = self.rect
+    
+    def render_label(self):
+        rect    = Rect(self.rect)
         fontname    = config.app.choose_fontname()
+        font_size   = 14
+        text_color  = self.text_color
+        text        = self.text
         font        = pygame.font.SysFont(fontname, font_size)
-        this_text = font.render(self.text, 1, self.text_color)
-        surface.blit(this_text, ((self.rect[0] + self.rect[2] / 2) - this_text.get_width() / 2,
-                                 (self.rect[1] + self.rect[3] / 2) - this_text.get_height() / 2))
-        return surface
+        surf        = font.render(text, 1, text_color)
+        self.label_sprite.image         = surf
+        self.label_sprite.rect.size     = surf.get_rect().size
+        self.label_sprite.rect.center   = rect.center
+    
+    def render(self):
+        self.render_bg()
+        self.render_label()
     
     def press(self):
         if self.active:
