@@ -49,6 +49,32 @@ def load_blubb_surfaces():
     surfs.append(surfs[1])
     return surfs
 
+@cached
+def load_empty():
+    return pygame.Surface((0, 0))
+
+@cached
+def load_speed():
+    return pygame.image.load("./assets/speed_blank.png")
+
+@cached
+def load_attack():
+    return pygame.image.load("./assets/swords_blank.png")
+
+@cached
+def load_hp():
+    return pygame.image.load("./assets/heart_blank.png")
+
+@cached
+def load_range():
+    # TODO return pygame.image.load("./assets/range_blank.png")
+    return load_empty()
+
+@cached
+def load_generator():
+    # TODO return pygame.image.load("./assets/generator_blank.png")
+    return load_empty()
+
 
 
 class Anim:

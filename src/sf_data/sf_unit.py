@@ -11,7 +11,7 @@ def create_larva(team):
     return Unit(
         bf      = None,
         anim    = larva_anim(),
-        move    = UnitMove(pos = 0, speed = 8),
+        move    = UnitMove(pos = 0, speed = 0.3),
         fight   = UnitFight(damage = 1, range = 0),
         team    = team,
         in_factory = True)
@@ -81,6 +81,7 @@ class Unit(Sprite):
         self.bf     = bf
         self.anim   = anim
         self.move   = move
+        self.drop   = None
         self.fight  = fight
         self.team   = team
         self.image  = self.anim.image()
@@ -89,6 +90,11 @@ class Unit(Sprite):
         self.rect   = self.image.get_rect()
 
     def update_in_factory(self, dt):
+        self.anim.update(dt)
+        self.image  = self.anim.image()
+        self.rect.size = self.image.get_rect().size
+    
+    def update_while_dropping(self, dt):
         self.anim.update(dt)
         self.image  = self.anim.image()
         self.rect.size = self.image.get_rect().size
@@ -103,6 +109,9 @@ class Unit(Sprite):
             self.bf.rect.x + (self.move.pos - self.bf.draw_offset) * self.bf.draw_scale,
             self.bf.rect.bottom - config.app.floor_height - self.rect.h / 2 + 10
         )
+        
+    def center(self):
+        return self.rect.center
     
     def damage(self, damage):
         self.hp -= damage
