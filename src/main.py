@@ -48,6 +48,8 @@ class App(Duct):
         surface = self.display_surface
         self.draw_ui()
         self.factory1.draw(surface)
+        if self.selected_module:
+            pygame.draw.rect(surface, (255, 255, 255), self.selected_module.screen_rect, 1)
         self.battlefield.draw(surface)
 
     def run_main_loop(self):
@@ -127,7 +129,7 @@ class App(Duct):
 
     def new_game(self):
         ffr = self.frames.factory_frame.inner[0].rect
-        frect = (ffr[0], ffr[1], ffr[2] - self.spawn_width, ffr[3])
+        frect = (ffr[0], ffr[1]+20, ffr[2] - self.spawn_width, ffr[3]-20)
         self.factory1 = Factory(1, self.on_put_unit, frect)
 
         battlefield    = Battlefield(
