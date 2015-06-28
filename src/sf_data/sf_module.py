@@ -1,3 +1,4 @@
+from utils import *
 import sf_data.sf_factory
 import config
 import pygame
@@ -194,7 +195,7 @@ class Module:
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
         surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
                         (r[1] + r[3] / 4) - t.get_height() / 2))
-        if this.is_passive():
+        if self.is_passive():
             return
         progress = -1
         col = (70, 70, 255)
