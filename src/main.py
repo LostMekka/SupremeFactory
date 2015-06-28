@@ -141,7 +141,7 @@ class App(Duct):
     def new_game(self):
         ffr = self.frames.factory_frame.inner[0].rect
         frect = (ffr[0], ffr[1]+20, ffr[2] - self.spawn_width, ffr[3]-20)
-        self.factory1 = Factory(1, self.on_put_unit, frect)
+        self.factory1 = Factory(1, self.on_put_unit, self.on_module_changed, frect)
 
         battlefield    = Battlefield(
             rect    = self.frames.battlefield_frame.outer.rect)
