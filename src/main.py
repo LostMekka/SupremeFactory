@@ -4,6 +4,7 @@ from utils import *
 from sf_button import SFButton
 from sf_data.sf_factory import Factory
 from sf_data.sf_module import Module
+import config
 
 class Frame:
     def __init__(self, l_color, bg_color, rect):
@@ -45,8 +46,17 @@ class App(Duct):
             self.render_everything()
             pygame.display.update()
 
+    def choose_fontname(self):
+        fonts   = pygame.font.get_fonts()
+        wants   = "freesansbold liberationmono".split()
+        for font in wants:
+            if font in fonts:
+                return font
+        return None
+
     def setup_ui(self):
-        self.main_font = pygame.font.SysFont(None, 24)
+        fontname        = self.choose_fontname()
+        self.main_font  = pygame.font.SysFont(fontname, 24)
         w = self.size[0]
         h = self.size[1]
         mh = 100
@@ -90,7 +100,8 @@ class App(Duct):
 
     def draw_mouse_pos(self):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
-        self.basic_font = pygame.font.SysFont(None, 48)
+        fontname        = self.choose_fontname()
+        self.basic_font = pygame.font.SysFont(fontname, 48)
         text_surf = basic_font.render("X: " + str(mouse_x) + " Y:" + str(mouse_y), True, Colors.black)
         text_rect = text_surf.get_rect()
         text_rect.center = ((mouse_x + 10), mouse_y)
@@ -185,9 +196,9 @@ class App(Duct):
         pass
 
 def main():
-    global app
     pygame.init()
     app = App()
+    config.app = app
     app.size = (1000, 700)
     app.setup_ui()
     app.new_game()
