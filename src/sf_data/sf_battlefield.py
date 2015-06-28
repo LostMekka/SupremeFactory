@@ -12,7 +12,7 @@ class Battlefield:
         self.rect           = Rect(rect)
         self.units_group    = Group()
         self.projectile_group = Group()
-        self.size = 1000
+        self.size = 200
         self.fist_unit_1 = None
         self.fist_unit_2 = None
         self.unit_count_1 = 0
@@ -74,4 +74,14 @@ class Battlefield:
     def draw(self, surface):
         self.units_group.draw(surface)
         self.projectile_group.draw(surface)
+
+    def get_width_percentage(self):
+        return self.rect.w / self.draw_scale / self.size
+
+    def get_offset_percentage(self):
+        return self.draw_offset / self.size
+
+    def set_window_center(self, c):
+        w = self.rect.w / self.draw_scale
+        off = min(self.size - w, max(0, c - w / 2))
 
