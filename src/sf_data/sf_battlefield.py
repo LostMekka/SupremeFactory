@@ -13,17 +13,21 @@ class Battlefield:
         self.projectile_group = Group()
 
     def create_some_units(self):
-        for i in range(10):
+        for i in range(1):
             unit = self.create_elefant(team = 1)
+            self.units_group.add(unit)
+        for i in range(1):
+            unit = self.create_elefant(team = 2)
             self.units_group.add(unit)
 
     def create_elefant(self, team):
+        start_pos = self.team_start_pos(team)
         unit        = Unit(
             bf          = self,
             team        = team,
             anim        = Anim(elefant_surfaces),
-            move        = UnitMove((8, 12)),
-            fight       = UnitFight((5,8), range))
+            move        = UnitMove(start_pos, speed = (8, 12)),
+            fight       = UnitFight((5,8), range = 5))
         return unit
 
     def update(self, dt):
@@ -38,8 +42,10 @@ class Battlefield:
         return self.rect.y + self.rect.h * 0.9
     
     def team_start_x(self, team):
-        pos = 0 if team == 1 else 1000
-        return self.rect.x + pos
+        return self.rect.x + self.team_start_pos(team)
+    
+    def team_start_pos(self, team):
+        return 0 if team == 1 else 400
 
 
 '''
