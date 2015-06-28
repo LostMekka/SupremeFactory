@@ -242,11 +242,9 @@ class Module:
         pygame.draw.rect(surface, (0, 0, 0), r, 1)
         surface.blit(t, ((r[0] + r[2] / 2) - t.get_width() / 2,
                         (r[1] + r[3] / 4) - t.get_height() / 2))
-        if self.is_passive():
-            return
         progress = -1
         col = (100, 100, 255)
-        if self.is_working():
+        if self.is_working() and not self.is_passive():
             progress = self.get_work_progress()
         if self.is_building():
             progress = self.get_build_progress()
