@@ -65,9 +65,9 @@ class App(Duct):
                         self.toggle_dir(2)
                     if event.key == pygame.K_s:
                         self.toggle_dir(3)
-                if event.type == MOUSEBUTTONDOWN:
+                if event.type == MOUSEBUTTONDOWN and event.button == LEFT:
                     self.on_mouse_down(pygame.mouse.get_pos())
-                if event.type == MOUSEBUTTONUP:
+                if event.type == MOUSEBUTTONUP and event.button == LEFT:
                     self.on_mouse_up(pygame.mouse.get_pos())
 
                 if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
