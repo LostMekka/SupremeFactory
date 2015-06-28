@@ -43,6 +43,7 @@ class App(Duct):
     def update_everything(self):
         dt  = 0.016 # TODO
         self.factory1.update(dt)
+        self.dropping_units.update(dt)
         self.battlefield.update(dt)
 
     def draw_everything(self):
@@ -55,6 +56,7 @@ class App(Duct):
         if self.selected_module:
             pygame.draw.rect(surface, (255, 255, 255), self.selected_module.screen_rect, 1)
         d = pygame.time.get_ticks()
+        self.dropping_units.draw(surface)
         self.battlefield.draw(surface)
         e = pygame.time.get_ticks()
         #print(b-a, c-b, d-c, e-d)
@@ -160,6 +162,9 @@ class App(Duct):
             rect    = self.frames.battlefield_frame.outer.rect)
         battlefield.create_some_units()
         self.battlefield = battlefield
+        
+        self.dropping_units     = DroppingUnits(
+            battlefield     = self.battlefield)
 
     def draw_ui(self):
         surface = self.display_surface
@@ -264,7 +269,52 @@ class App(Duct):
     def on_put_unit(self, unit):
         # TODO: insert unit
         unit.kill()
-        self.battlefield.add_unit(unit)
+        self.dropping_units.add_unit(unit)
+
+
+
+class DroppingUnits:
+
+    def __init__(self, battlefield):
+        self.battlefield = battlefield
+        self.units = pygame.sprite.Group()
+        
+    def add_unit(self, unit):
+        self.units.add(unit)
+        x, y = unit.center()
+        tx, ty = self.target_xy(unit)
+        unit.drop = Duct(x = x, y = y, tx = tx, ty = ty, t = 0)
+    
+    def update(self, dt):
+        for unit in self.units.sprites():
+            unit.update_while_dropping(dt)
+            self.update_rect(dt, unit)
+            if self.is_dropped(unit):
+                unit.kill()
+                self.battlefield.add_unit(unit)
+    
+    def update_rect(self, dt, unit):
+        d   = unit.drop
+        d.t += dt
+        dx  = d.tx - d.x
+        dy  = d.ty - d.y
+        x   = dx * d.t + d.x
+        y   = dy * d.t * d.t + d.y
+        unit.rect.center = (x, y)
+    
+    def target_xy(self, unit):
+        bf          = self.battlefield.rect
+        target_x    = bf.x
+        target_y    = bf.bottom - config.app.floor_height - unit.rect.h / 2 + 10
+        return target_x, target_y
+    
+    def is_dropped(self, unit):
+        return unit.drop.t >= 1
+    
+    def draw(self, surface):
+        self.units.draw(surface)
+
+
 
 def main():
     pygame.init()
