@@ -56,6 +56,8 @@ class App(Duct):
     def run_main_loop(self):
         while True:  # main game loop
             for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    self.on_key_down(event.key)
                 if event.type == MOUSEBUTTONDOWN:
                     self.on_mouse_down(pygame.mouse.get_pos())
                 if event.type == MOUSEBUTTONUP:
@@ -160,19 +162,18 @@ class App(Duct):
 
         # draw_mouse_pos()
 
-    def select_module(self, module):
-        self.selected_module = module
-        if(module):
+    def update_buttons(self):
+        if(self.selected_module):
             for b in self.build_buttons:
-                if module.can_build_new():
+                if self.selected_module.can_build_new():
                     b.set_available()
                 else:
                     b.set_unavailable()
-            if module.can_upgrade():
+            if self.selected_module.can_upgrade():
                 self.buttons.upgrade.set_available()
             else:
                 self.buttons.upgrade.set_unavailable()
-            if module.can_sell():
+            if self.selected_module.can_sell():
                 self.buttons.sell.set_available()
             else:
                 self.buttons.sell.set_unavailable()
@@ -190,7 +191,8 @@ class App(Duct):
                 module = m
                 break
         if module:
-            self.select_module(module)
+            self.selected_module = module
+            self.update_buttons()
             self.drag_start = pos
             return
         # no module clicked. maybe a button?
