@@ -23,15 +23,18 @@ class Module:
     def _action_range(self, unit):
         unit.add_range(5 * self.level)
 
-    names = ["empty", "generator", "hp", "attack", "range"]
+    names       = ["empty", "generator", "hp", "attack", "range"]
     text_surfaces = None
-    work_times = [0, 0, 1, 1, 1]
+    work_times  = [0, 0, 1, 1, 1]
     build_times = [2, 10, 10, 10, 10]
     build_costs = [0, 10, 100, 100, 100]
-    actions = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range]
-    max_level = [1, 10, 10, 10, 10]
-    input_time = 0.8
-    text_color = (220, 220, 250)
+    actions     = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range]
+    max_level   = [1, 10, 10, 10, 10]
+    input_time  = 0.8
+    text_color  = (220, 220, 250)
+    bg_surf     = [images.load_empty,
+        images.load_generator, images.load_hp,
+        images.load_attack, images.load_range]
 
     @staticmethod
     def get_build_cost(type):
@@ -40,7 +43,7 @@ class Module:
     def __init__(self, pos, pass_unit_callback, change_callback, screen_rect):
         self.pos = pos
         self.pass_unit_callback = pass_unit_callback
-        self.change_callback = change_callback
+        self._change_callback = change_callback
         self.screen_rect = screen_rect
         self.screen_mid_point = get_rect_middle(self.screen_rect)
         self._dirs = [True, False, False, False]
@@ -55,8 +58,11 @@ class Module:
         self.work_timer_max = 1
         self.input_dir = 0
         self.level = 1
-        self.unit_group = pygame.sprite.Group()
-        self.arrow_group = pygame.sprite.Group()
+        self.bg_group       = pygame.sprite.Group()
+        self.bg_sprite      = pygame.sprite.Sprite(self.bg_group)
+        self.update_bg()
+        self.unit_group     = pygame.sprite.Group()
+        self.arrow_group    = pygame.sprite.Group()
         asurf = images.load_arrows()
         self.arrows = []
         for dir in range(0, 4):
@@ -76,6 +82,16 @@ class Module:
             for i in range(0, len(Module.names)):
                 s = font.render(Module.names[i], 1, Module.text_color)
                 Module.text_surfaces.append(s)
+
+    def change_callback(self, fles):
+        assert self is fles
+        self.update_bg()
+        self._change_callback(self)
+
+    def update_bg(self):
+        self.bg_sprite.image        = self.bg_surf[self.type]()
+        self.bg_sprite.rect         = self.bg_sprite.image.get_rect()
+        self.bg_sprite.rect.center  = self.screen_mid_point
 
     def get_type_name(self):
         return Module.names[self.type]
@@ -239,6 +255,7 @@ class Module:
         return (mid[0] - dir[0] * p * r[2], mid[1] - dir[1] * p * r[3])
     
     def draw(self, surface):
+        self.bg_group.draw(surface)
         self.arrow_group.draw(surface)
         self.unit_group.draw(surface)
     
