@@ -154,6 +154,9 @@ class Module:
     def can_upgrade(self):
         return self.is_idle() and self.level < Module.max_level[self.type]
 
+    def is_max_level(self):
+        return self.level >= Module.max_level[self.type]
+
     def can_sell(self):
         return (
             (self.is_idle() and self.type != Module.type_empty)
