@@ -159,8 +159,12 @@ class App(Duct):
         for label in self.labels:
             surface.blit(label, (170, 500))
 
+    def on_module_changed(self, module):
+        if module is self.selected_module:
+            self.update_buttons()
+
     def update_buttons(self):
-        if(self.selected_module):
+        if self.selected_module:
             for b in self.build_buttons:
                 if self.selected_module.can_build_new():
                     b.set_available()
