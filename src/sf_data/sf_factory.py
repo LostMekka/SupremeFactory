@@ -33,6 +33,8 @@ class Factory:
                         self.pass_unit_callback,  module_change_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
+        if dir is None:
+            return False
         if module.pos[0] >= Factory._module_count_x - 1 and dir == 0:
             self.put_unit_callback(unit)
             return True

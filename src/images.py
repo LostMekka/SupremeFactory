@@ -42,6 +42,13 @@ def load_larva_surfaces():
     surfs.append(surfs[1])
     return surfs
 
+@cached
+def load_blubb_surfaces():
+    paths  = ["./assets/blubb"+str(i)+".png" for i in range(1,6)]
+    surfs  = [pygame.image.load(path) for path in paths]
+    surfs.append(surfs[1])
+    return surfs
+
 
 
 class Anim:
@@ -74,6 +81,11 @@ def elefant_anim():
     return Anim(
         surfs   = load_elefant_surfaces(),
         delay   = 0.8)
+
+def blubb_anim():
+    return Anim(
+        surfs   = load_blubb_surfaces(),
+        delay   = 0.5)
 
 
 
