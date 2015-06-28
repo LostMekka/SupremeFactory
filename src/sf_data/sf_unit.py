@@ -114,6 +114,8 @@ class Projectile(Sprite):
         self.xy         = start_xy
         self.pos        = start_pos
         self.image      = projectile_image()
+        if team == 2:
+            self.image      = pygame.transform.flip(self.image, True, False)
         self.rect       = self.image.get_rect()
 
     def update(self, dt):
@@ -127,7 +129,7 @@ class Projectile(Sprite):
 def load_projectile_image():
     from pygame.gfxdraw import filled_circle
     try:
-        path    = "./assets/projectile.png"
+        path    = "./assets/projectile2.png"
         image   = pygame.image.load(path)
         return image
     except: # TODO put some PNG there
