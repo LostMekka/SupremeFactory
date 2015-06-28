@@ -96,19 +96,21 @@ class Module:
     def get_type_name(self):
         return Module.names[self.type]
 
-    def toggle_target_dir(self, dir):
-        if (self.pos[0] == 0 and dir == 2) or \
+    def set_target_dir(self, dir, bool):
+        if self._dirs[dir] == bool or (self.pos[0] == 0 and dir == 2) or \
                 (self.pos[1] == 0 and dir == 1) or \
                 (self.pos[1] == sf_data.sf_factory.Factory._module_count_y - 1 and dir == 3):
             return
         if self._dirs[dir]:
             self._dir_count -= 1
-            self._dirs[dir] = False
             self.arrow_group.remove(self.arrows[dir])
         else:
             self._dir_count += 1
-            self._dirs[dir] = True
             self.arrow_group.add(self.arrows[dir])
+        self._dirs[dir] = bool
+    
+    def toggle_target_dir(self, dir):
+        self.set_target_dir(dir, not self._dirs[dir])
 
     def uses_target_dir(self, dir):
         return self._dirs[dir]
