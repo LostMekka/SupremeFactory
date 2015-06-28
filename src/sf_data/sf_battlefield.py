@@ -8,8 +8,6 @@ from images import *
 
 class Battlefield:
 
-    scale = 60
-
     def __init__(self, rect):
         self.rect           = Rect(rect)
         self.units_group    = Group()
@@ -20,27 +18,26 @@ class Battlefield:
         self.unit_count_1 = 0
         self.unit_count_2 = 0
         self.draw_offset = 0
+        self.draw_scale = 60
 
     def create_some_units(self):
         for i in range(1):
             unit = self.create_elefant(team = 1)
-            self.units_group.add(unit)
+            self.add_unit(unit)
         for i in range(1):
             unit = self.create_elefant(team = 2)
-            self.units_group.add(unit)
+            self.add_unit(unit)
 
     def create_elefant(self, team):
-        start_pos = self.team_start_pos(team)
         unit        = Unit(
             bf          = self,
             team        = team,
             anim        = elefant_anim(),
-            move        = UnitMove(start_pos, speed = (8, 12)),
+            move        = UnitMove(0, speed = (1, 2)),
             fight       = UnitFight((5,8), range = 5))
         return unit
 
     def add_unit(self, unit):
-        self.units.append(unit)
         if unit.team == 1:
             unit.move.pos = 0
         if unit.team == 2:
@@ -78,11 +75,3 @@ class Battlefield:
         self.units_group.draw(surface)
         self.projectile_group.draw(surface)
 
-    def floor_y(self):
-        return self.rect.y + self.rect.h * 0.9
-    
-    def team_start_x(self, team):
-        return self.rect.x + self.team_start_pos(team)
-    
-    def team_start_pos(self, team):
-        return 0 if team == 1 else 400
