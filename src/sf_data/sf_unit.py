@@ -38,7 +38,7 @@ class UnitFight:
         import random
         self.range = range
         self.damage = damage
-        self.delay  = 4
+        self.delay  = 1
         self.__time = 0
         self.stand = False
     
@@ -118,6 +118,7 @@ class Unit(DirtySprite):
     
     def damage(self, damage):
         self.hp -= damage
+        print("damage! ", self.hp)
         if self.hp <= 0:
             self.bf.on_kill(self)
     
@@ -125,16 +126,13 @@ class Unit(DirtySprite):
         self.move.speed += v
 
     def add_hp(self, v):
-        # TODO do stuff
-        pass
+        self.hp += v
 
     def add_attack(self, v):
-        # TODO do stuff
-        pass
+        self.fight.damage += v
 
     def add_range(self, v):
-        # TODO do stuff
-        pass    
+        self.fight.range += v
 
 
 class Projectile(DirtySprite):
