@@ -49,7 +49,7 @@ class Module:
         self.build_timer_max = 1
         self.work_timer_max = 1
         self.input_dir = 0
-        self.level = 0
+        self.level = 1
         if not Module.text_surfaces:
             Module.text_surfaces = []
             fontname    = config.app.choose_fontname()
@@ -84,13 +84,13 @@ class Module:
         return not (self.is_passive() or self.unit or self.is_building())
 
     def is_waiting(self):
-        return not self.is_passive() and self.input_timer >= 0
+        return not self.is_passive() and self.input_timer > 0
 
     def is_working(self):
-        return self.is_passive() or self.work_timer >= 0
+        return self.is_passive() or self.work_timer > 0
 
     def is_building(self):
-        return self.build_timer >= 0
+        return self.build_timer > 0
 
     # progress
     def get_input_progress(self):
