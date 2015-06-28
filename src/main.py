@@ -6,6 +6,7 @@ from sf_data.sf_factory import Factory
 from sf_data.sf_module import Module
 from sf_data.sf_battlefield import Battlefield
 import config
+import ai
 
 class Frame:
     def __init__(self, l_color, bg_color, rect):
@@ -47,6 +48,7 @@ class App(Duct):
         self.factory1.update(dt)
         self.dropping_units.update(dt)
         self.battlefield.update(dt)
+        self.ai2.update(dt)
 
     def draw_everything(self):
         surface = self.display_surface
@@ -162,6 +164,8 @@ class App(Duct):
         ffr = self.frames.factory_frame.inner[0].rect
         frect = (ffr[0], ffr[1]+20, ffr[2] - self.spawn_width, ffr[3]-20)
         self.factory1 = Factory(1, self.on_put_unit, self.on_module_changed, frect)
+        self.factory2 = Factory(2, self.on_put_unit, self.on_module_changed, frect)
+        self.ai2 = ai.AI(self.factory1)
 
         battlefield    = Battlefield(
             rect    = self.frames.battlefield_frame.outer.rect)
