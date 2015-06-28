@@ -14,7 +14,9 @@ class Battlefield:
         self.first_unit_2 = None
         self.rect               = Rect(rect)
         self.units_group        = LayeredDirty()
+        self.units_group.set_clip(rect)
         self.projectile_group   = LayeredDirty()
+        self.units_group.set_clip(rect)
         self.unit_count_1 = 0
         self.unit_count_2 = 0
         self.draw_offset = 0
