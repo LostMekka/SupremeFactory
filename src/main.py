@@ -46,6 +46,7 @@ class App(Duct):
     def update_everything(self):
         dt  = 0.016 # TODO
         self.factory1.update(dt)
+        self.factory2.update(dt)
         self.dropping_units.update(dt)
         self.battlefield.update(dt)
         self.ai2.update(dt)
