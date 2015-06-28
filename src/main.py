@@ -168,10 +168,8 @@ class App(Duct):
         self.factory2 = Factory(2, self.on_put_unit, self.on_module_changed, frect)
         self.ai2 = ai.AI(self.factory1)
 
-        battlefield    = Battlefield(
+        self.battlefield    = Battlefield(
             rect    = self.frames.battlefield_frame.outer.rect)
-        battlefield.create_some_units()
-        self.battlefield = battlefield
         
         self.dropping_units     = DroppingUnits(
             battlefield     = self.battlefield)
