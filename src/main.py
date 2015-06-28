@@ -4,6 +4,7 @@ from utils import *
 from sf_button import SFButton
 from sf_data.sf_factory import Factory
 from sf_data.sf_module import Module
+from sf_data.sf_battlefield import Battlefield
 import config
 
 class Frame:
@@ -26,10 +27,13 @@ class App(Duct):
         self.selected_module = None
 
     def update_everything(self):
-        pass
+        dt  = 0.016 # TODO
+        self.battlefield.update(dt)
 
-    def render_everything(self):
+    def draw_everything(self):
+        surface = self.display_surface
         self.draw_ui()
+        self.battlefield.draw(surface)
 
     def run_main_loop(self):
         while True:  # main game loop
@@ -43,7 +47,7 @@ class App(Duct):
                     pygame.quit()
                     sys.exit()
             self.update_everything()
-            self.render_everything()
+            self.draw_everything()
             pygame.display.update()
 
     def choose_fontname(self):
@@ -96,7 +100,12 @@ class App(Duct):
         #self.labels.append(self.main_font.render("Modul 1", 1, Colors.white))
 
     def new_game(self):
-        self.factory1 = Factory(1, self.on_put_unit, self.frames.factory_frame.rect)
+        self.factory1       = Factory(1, self.on_put_unit, self.frames.factory_frame.rect)
+        
+        battlefield    = Battlefield(
+            rect    = self.frames.battlefield_frame.rect)
+        battlefield.create_some_units()
+        self.battlefield = battlefield
 
     def draw_mouse_pos(self):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
