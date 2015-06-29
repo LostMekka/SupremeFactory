@@ -11,6 +11,8 @@ class Factory:
     
     def __init__(self, team, put_unit_callback, module_change_callback, screen_rect):
         self._unit_creation_time = 3
+        self.hp = 10000
+        self.money = 0
         self.team = team
         self.put_unit_callback = put_unit_callback
         self.screen_rect = screen_rect
