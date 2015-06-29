@@ -126,7 +126,6 @@ class Unit(DirtySprite):
     
     def damage(self, damage):
         self.hp -= damage
-        print("damage! ", self.hp)
         if self.hp <= 0:
             self.bf.on_kill(self)
     
