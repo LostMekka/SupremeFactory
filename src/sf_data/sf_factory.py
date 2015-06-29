@@ -7,10 +7,10 @@ class Factory:
     
     _module_count_x = 4
     _module_count_y = 3
-    _unit_creation_time = 3
     _unit_creation_pos = (0, _module_count_y - 1)
     
     def __init__(self, team, put_unit_callback, module_change_callback, screen_rect):
+        self._unit_creation_time = 3
         self.team = team
         self.put_unit_callback = put_unit_callback
         self.screen_rect = screen_rect
@@ -18,7 +18,7 @@ class Factory:
         self.unit_count = 0
         self.max_unit_count = 10
         self.modules = []
-        self.timer = Factory._unit_creation_time
+        self.timer = self._unit_creation_time
         self.timer = 0
         w = screen_rect[2] / Factory._module_count_x
         h = screen_rect[3] / Factory._module_count_y
@@ -76,9 +76,9 @@ class Factory:
         if self.timer > 0:
             self.timer -= time
         if self.timer <= 0 and self.unit_count < self.max_unit_count:
-            inmod = self.get_module(Factory._unit_creation_pos)
+            inmod = self.get_module(self._unit_creation_pos)
             if inmod.is_idle():
-                self.timer += Factory._unit_creation_time
+                self.timer += self._unit_creation_time
                 unit = sf_data.sf_unit.create_larva(self.team)
                 inmod.receive_unit(unit, 0)
     
