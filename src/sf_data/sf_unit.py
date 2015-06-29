@@ -62,7 +62,7 @@ class UnitFight:
                     battlefield = unit.bf)
                 unit.bf.projectile_group.add(projectile)
                 self.__time = self.delay
-            elif stand_ranged:
+            elif stand_melee:
                 target.damage(self.damage)
                 self.__time = self.delay
 
