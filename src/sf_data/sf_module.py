@@ -19,16 +19,16 @@ class Module:
         self.factory.money += time * 2 * self.level
 
     def _action_hp(self, unit):
-        unit.add_hp(10 * self.level)
+        unit.add_hp(5 * self.level)
 
     def _action_attack(self, unit):
         unit.add_attack(1 * self.level)
 
     def _action_range(self, unit):
-        unit.add_range(5 * self.level)
+        unit.add_range(1 * self.level)
 
     def _action_speed(self, unit):
-        unit.add_speed(1 * self.level)
+        unit.add_speed(0.5 * self.level)
 
     names       = ["empty", "generator", "hp", "attack", "range", "speed"]
     text_surfaces = None
