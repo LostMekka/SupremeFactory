@@ -30,7 +30,7 @@ class Factory:
                 rx2 = math.floor(screen_rect[0] + (x + 1) * w)
                 ry2 = math.floor(screen_rect[1] + (y + 1) * h)
                 r = (rx1, ry1, rx2-rx1, ry2-ry1)
-                self.modules.append(sf_data.sf_module.Module((x, y), 
+                self.modules.append(sf_data.sf_module.Module((x, y), self,
                         self.pass_unit_callback,  module_change_callback, r))
     
     def pass_unit_callback(self, module, unit, dir):
