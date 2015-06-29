@@ -47,7 +47,7 @@ class AI:
         random.shuffle(self.lists)
         for l in self.lists:
             random.shuffle(l)
-        self.max_timer = 8
+        self.max_timer = 2
         self.timer = self.max_timer
     
     def update(self, time):
