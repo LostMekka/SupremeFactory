@@ -49,7 +49,10 @@ class App(Duct):
         self.factory2.update(dt)
         self.dropping_units.update(dt)
         self.battlefield.update(dt)
-        self.ai2.update(dt)
+        if self.ai1:
+            self.ai1.update(dt)
+        if self.ai2:
+            self.ai2.update(dt)
 
     def draw_everything(self):
         surface = self.display_surface
@@ -162,12 +165,15 @@ class App(Duct):
         self.labels = []
         #self.labels.append(self.main_font.render("Modul 1", 1, Colors.white))
 
-    def new_game(self):
+    def new_game(self, player1_is_ai, player2_is_ai):
         ffr = self.frames.factory_frame.inner[0].rect
         frect = (ffr[0], ffr[1]+20, ffr[2] - self.spawn_width, ffr[3]-20)
         self.factory1 = Factory(1, self.on_put_unit, self.on_module_changed, frect)
         self.factory2 = Factory(2, self.on_put_unit, self.on_module_changed, frect)
-        self.ai2 = ai.AI(self.factory1)
+        if player1_is_ai:
+            self.ai1 = ai.AI(self.factory1)
+        if player2_is_ai:
+            self.ai2 = ai.AI(self.factory2)
 
         self.battlefield    = Battlefield(
             rect    = self.frames.battlefield_frame.outer.rect)
@@ -366,7 +372,7 @@ def main():
     config.app = app
     app.size = (1300, 700)
     app.setup_ui()
-    app.new_game()
+    app.new_game(False, True)
     flags       = pygame.DOUBLEBUF | pygame.HWSURFACE
     app.display_surface = pygame.display.set_mode(app.size, flags)
     pygame.display.set_caption('SupremeFactory!')
