@@ -358,6 +358,8 @@ class DroppingUnits:
 
 
 def main():
+    if "--sounds" in sys.argv:
+        config.sounds = True
     pygame.init()
     app = App()
     config.app = app

@@ -1,1 +1,2 @@
 app = None
+sounds = False

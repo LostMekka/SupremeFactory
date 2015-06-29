@@ -2,6 +2,7 @@ from utils import *
 import random as R
 import config
 import pygame
+import sounds
 from pygame.sprite import *
 from images import *
 
@@ -62,6 +63,7 @@ class UnitFight:
                     battlefield = unit.bf)
                 unit.bf.projectile_group.add(projectile)
                 self.__time = self.delay
+                sounds.play_piu()
             elif stand_melee:
                 target.damage(self.damage)
                 self.__time = self.delay

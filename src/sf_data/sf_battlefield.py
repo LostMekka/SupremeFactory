@@ -3,6 +3,7 @@ from pygame.sprite import *
 from sf_data.sf_unit import *
 from pygame import Rect
 from images import *
+import sounds
 
 
 
@@ -53,6 +54,7 @@ class Battlefield:
         if unit is self.first_unit_2:
             self.first_unit_2 = None
         unit.kill()
+        sounds.play_argh()
     
     def update(self, dt):
         max1 = -100
