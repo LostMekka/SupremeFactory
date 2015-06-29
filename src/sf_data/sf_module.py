@@ -223,7 +223,7 @@ class Module:
                 self.change_callback(self)
             return
         # passive stuff
-        if self.is_passive:
+        if self.is_passive():
             self.actions[self.type](self, time)
         # when not building: if we have no unit to work on, do nothing
         if not self.unit:
