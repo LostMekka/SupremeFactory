@@ -16,7 +16,6 @@ class Factory:
         self.team = team
         self.put_unit_callback = put_unit_callback
         self.screen_rect = screen_rect
-        self.hp = 1000
         self.unit_count = 0
         self.max_unit_count = 10
         self.modules = []
