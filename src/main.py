@@ -134,22 +134,23 @@ class App(Duct):
         self.frames.info_frame = Frame(Colors.black, (100,100,100), (fw, h-ih, bw, ih))
         
         bh = 20
-        mn = 4
-        n = mn + 3
+        n = 5
         sh = (ih - n * bh) / (n + 1)
 
         self.build_buttons = []
         self.buttons = Duct()
-        def getrekt(i):
-            return (fw / 2, h - ih + sh + (i - 1) * (bh + sh), fw / 2 - sh, bh)
-        for t in range(1, mn+1):
-            text                = "Build: " + Module.names[t]
-            btn                 = SFButton(
-                getrekt(t), None, text, None, self.on_build_press, t)
+        def getrektl(i):
+            return (sh, h - ih + sh + (i - 1) * (bh + sh), fw / 2 - 3/2*sh, bh)
+        def getrektr(i):
+            return ((fw+sh) / 2, h - ih + sh + (i - 1) * (bh + sh), fw / 2 - 3/2*sh, bh)
+        for t in range(1, n+1):
+            text = "Build: " + Module.names[t] + " ( " + str(Module.build_costs[t]) + " energy )"
+            btn  = SFButton(
+                getrektr(t), None, text, None, self.on_build_press, t)
             self.buttons[text]  = btn
             self.build_buttons.append(btn)
-        self.buttons.upgrade = SFButton(getrekt(mn+1.5), None, "Upgrade", None, self.on_upgrade_press, None)
-        self.buttons.sell = SFButton(getrekt(mn+3), None, "Sell", None, self.on_sell_press, None)
+        self.buttons.upgrade = SFButton(getrektl(n), None, "Upgrade", None, self.on_upgrade_press, None)
+        self.buttons.sell = SFButton(getrektl(n-1), None, "Sell", None, self.on_sell_press, None)
         self.selected_module = None
         self.update_buttons()
         
