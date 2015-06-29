@@ -170,6 +170,8 @@ class App(Duct):
         frect = (ffr[0], ffr[1]+20, ffr[2] - self.spawn_width, ffr[3]-20)
         self.factory1 = Factory(1, self.on_put_unit, self.on_module_changed, frect)
         self.factory2 = Factory(2, self.on_put_unit, self.on_module_changed, frect)
+        self.ai1 = None
+        self.ai2 = None
         if player1_is_ai:
             self.ai1 = ai.AI(self.factory1)
         if player2_is_ai:
