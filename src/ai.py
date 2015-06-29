@@ -1,4 +1,5 @@
 import sf_data.sf_module
+import random
 
 class AI:
     
@@ -43,6 +44,9 @@ class AI:
                 self.modules_for_rng,
                 self.modules_for_spd,
         ]
+        random.shuffle(self.lists)
+        for l in self.lists:
+            random.shuffle(l)
         self.max_timer = 2
         self.timer = self.max_timer
     
