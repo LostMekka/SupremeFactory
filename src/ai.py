@@ -26,12 +26,12 @@ class AI:
         self.modules_for_dmg.append(factory.get_module((0, 0)))
         self.modules_for_dmg.append(factory.get_module((1, 0)))
         self.modules_for_dmg.append(factory.get_module((2, 0)))
-        self.dmgmodule = factory.get_module((3, 0))
+        self.modules_for_dmg.append(factory.get_module((3, 0)))
         self.modules_for_rng.append(factory.get_module((0, 1)))
         self.modules_for_gen.append(factory.get_module((1, 1)))
         self.modules_for_gen.append(factory.get_module((2, 1)))
         self.modules_for_dmg.append(factory.get_module((3, 1)))
-        self.lfemodule = factory.get_module((0, 2))
+        self.modules_for_lfe.append(factory.get_module((0, 2)))
         self.modules_for_lfe.append(factory.get_module((1, 2)))
         self.modules_for_lfe.append(factory.get_module((2, 2)))
         self.modules_for_spd.append(factory.get_module((3, 2)))
@@ -43,8 +43,16 @@ class AI:
                 self.modules_for_rng,
                 self.modules_for_spd,
         ]
+        self.max_timer = 2
+        self.timer = self.max_timer
     
     def update(self, time):
+        self.timer -= time;
+        while self.timer < 0:
+            self.timer += self.max_timer
+            self.do_action()
+        
+    def do_action(self):
         # build the generators first!
         if len(self.modules_for_gen) > 0:
             gen = self.modules_for_gen.pop()
