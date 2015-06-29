@@ -15,6 +15,9 @@ class Module:
     def _action_empty(self, unit):
         pass
 
+    def _action_generate(self, time):
+        self.factory.money += time * 2 * self.level
+
     def _action_hp(self, unit):
         unit.add_hp(10 * self.level)
 
@@ -32,7 +35,7 @@ class Module:
     work_times  = [0, 0, 1, 1, 1, 1]
     build_times = [2, 10, 10, 10, 10, 10]
     build_costs = [0, 10, 100, 100, 100, 100]
-    actions     = [_action_empty, _action_empty, _action_hp, _action_attack, _action_range, _action_speed]
+    actions     = [_action_empty, _action_generate, _action_hp, _action_attack, _action_range, _action_speed]
     max_level   = [1, 10, 10, 10, 10, 10]
     input_time  = 0.8
     text_color  = (220, 220, 250)
@@ -44,8 +47,9 @@ class Module:
     def get_build_cost(type):
         return build_costs[type]
 
-    def __init__(self, pos, pass_unit_callback, change_callback, screen_rect):
+    def __init__(self, pos, factory, pass_unit_callback, change_callback, screen_rect):
         self.pos = pos
+        self.factory = factory
         self.pass_unit_callback = pass_unit_callback
         self._change_callback = change_callback
         self.screen_rect = screen_rect
@@ -218,6 +222,9 @@ class Module:
             if self.build_timer == 0:
                 self.change_callback(self)
             return
+        # passive stuff
+        if self.is_passive:
+            self.actions[self.type](self, time)
         # when not building: if we have no unit to work on, do nothing
         if not self.unit:
             return
