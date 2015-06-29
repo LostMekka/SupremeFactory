@@ -239,6 +239,7 @@ class Module:
                 pass_success = self.pass_unit_callback(
                     self, self.unit, self._curr_dir)
                 if pass_success:
+                    self.actions[self.type](self, self.unit)
                     self.unit_group.remove(self.unit)
                     self.unit = None
                     self.change_callback(self)

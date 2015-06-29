@@ -47,9 +47,10 @@ class UnitFight:
         target = unit.bf.first_unit_2 if unit.team == 1 else unit.bf.first_unit_1
         d = abs(unit.move.pos - target.move.pos) if target else (
                 unit.bf.size-unit.move.pos if unit.team == 1 else unit.move.pos)
+        target_in_range = self.range > d
         mr = 1
         stand_melee = self.range == 0 and d <= mr
-        stand_ranged = self.range > 0 and (self.range > d or self.__time > 0)
+        stand_ranged = self.range > 0 and (target_in_range or self.__time > 0)
         self.stand = stand_melee or stand_ranged
         if self.__time == 0 and target:
             if stand_ranged:
@@ -61,7 +62,7 @@ class UnitFight:
                     battlefield = unit.bf)
                 unit.bf.projectile_group.add(projectile)
                 self.__time = self.delay
-            elif stand_ranged:
+            elif stand_melee:
                 target.damage(self.damage)
                 self.__time = self.delay
 
@@ -92,6 +93,13 @@ class Unit(DirtySprite):
         # TODO hack, so no phantom larva is on the top left of the window
         self.rect.topleft = (-1000, -1000)
 
+    def set_anim(self, anim):
+        if self.anim is anim:
+            return
+        self.anim = anim
+        if self.team == 2:
+            self.anim.flip()
+
     def update_in_factory(self, dt):
         self.anim.update(dt)
         self.image  = self.anim.image()
@@ -118,7 +126,6 @@ class Unit(DirtySprite):
     
     def damage(self, damage):
         self.hp -= damage
-        print("damage! ", self.hp)
         if self.hp <= 0:
             self.bf.on_kill(self)
     
