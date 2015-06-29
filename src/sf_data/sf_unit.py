@@ -47,9 +47,10 @@ class UnitFight:
         target = unit.bf.first_unit_2 if unit.team == 1 else unit.bf.first_unit_1
         d = abs(unit.move.pos - target.move.pos) if target else (
                 unit.bf.size-unit.move.pos if unit.team == 1 else unit.move.pos)
+        target_in_range = self.range > d
         mr = 1
         stand_melee = self.range == 0 and d <= mr
-        stand_ranged = self.range > 0 and (self.range > d or self.__time > 0)
+        stand_ranged = self.range > 0 and (target_in_range or self.__time > 0)
         self.stand = stand_melee or stand_ranged
         if self.__time == 0 and target:
             if stand_ranged:
